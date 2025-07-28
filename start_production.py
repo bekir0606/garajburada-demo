@@ -21,21 +21,28 @@ def main():
     print(f"🌐 URL: http://{host}:{port}")
     print(f"📊 Admin Panel: http://{host}:{port}/admin")
     print(f"📈 API Docs: http://{host}:{port}/docs")
+    print(f"🔧 Environment: {os.environ.get('RAILWAY_ENVIRONMENT', 'production')}")
     
-    # Platform port kontrolü
-    if port == 8000:
-        print("🔧 Platform port'u kullanılıyor: 8000")
+    # Railway port kontrolü
+    if port != 8000:
+        print(f"🔧 Railway port'u kullanılıyor: {port}")
+    else:
+        print("🔧 Default port kullanılıyor: 8000")
     
-    # Uvicorn ile sunucuyu başlat
-    uvicorn.run(
-        "backend.main:app",
-        host=host,
-        port=port,
-        workers=workers,
-        reload=False,  # Production'da reload kapalı
-        access_log=True,
-        log_level="info"
-    )
+    try:
+        # Uvicorn ile sunucuyu başlat
+        uvicorn.run(
+            "backend.main:app",
+            host=host,
+            port=port,
+            workers=workers,
+            reload=False,  # Production'da reload kapalı
+            access_log=True,
+            log_level="info"
+        )
+    except Exception as e:
+        print(f"❌ Sunucu başlatma hatası: {e}")
+        sys.exit(1)
 
 if __name__ == "__main__":
     main() 
