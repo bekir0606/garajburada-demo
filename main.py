@@ -25,9 +25,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Statik dosyaları servis et
-app.mount("/static", StaticFiles(directory="frontend"), name="static")
-
 # Veritabanı bağlantısı
 DATABASE_URL = "sqlite:///./database/database.db"
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
@@ -90,10 +87,8 @@ def create_access_token(data: dict):
 def test_api():
     return {"message": "Garajburada.com API çalışıyor!", "status": "success"}
 
-# Basit test endpoint
-@app.get("/")
-def root_test():
-    return {"message": "Garajburada.com Root çalışıyor!", "status": "success"}
+# Statik dosyaları servis et
+app.mount("/static", StaticFiles(directory="frontend"), name="static")
 
 # Ana sayfa
 @app.get("/")
