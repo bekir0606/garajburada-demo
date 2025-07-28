@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>İlan Detayı</title>
+  <style>
+    body { font-family: Arial; background: #f1f1f1; padding: 20px; }
+    .container { max-width: 800px; margin: auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 0 8px rgba(0,0,0,0.1); }
+    h2 { margin-bottom: 15px; }
+    img { width: 100%; max-height: 400px; object-fit: cover; border-radius: 8px; }
+    .info p { margin: 10px 0; font-size: 16px; }
+  </style>
+</head>
+<body>
+
+<div class="container" id="detay">
+  <h2>🔍 İlan Detayı</h2>
+  <img id="photo" src="" alt="İlan görseli">
+  <div class="info">
+    <p><b>Başlık:</b> <span id="title"></span></p>
+    <p><b>Kategori:</b> <span id="category"></span></p>
+    <p><b>Marka:</b> <span id="brand"></span></p>
+    <p><b>Model:</b> <span id="model"></span></p>
+    <p><b>Yıl:</b> <span id="year"></span></p>
+    <p><b>Fiyat:</b> ₺<span id="price"></span></p>
+    <p><b>Açıklama:</b> <span id="desc"></span></p>
+  </div>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const ilanId = params.get("id");
+
+if (!ilanId) {
+  document.getElementById("detay").innerHTML = "<p>İlan ID belirtilmedi.</p>";
+} else {
+  fetch(`/api/ilan/${ilanId}`)
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("title").textContent = data.title;
+      document.getElementById("category").textContent = data.category;
+      document.getElementById("brand").textContent = data.brand;
+      document.getElementById("model").textContent = data.model;
+      document.getElementById("year").textContent = data.year;
+      document.getElementById("price").textContent = data.price;
+      document.getElementById("desc").textContent = data.description;
+      document.getElementById("photo").src = data.photo || "https://via.placeholder.com/600x300?text=Foto+yok";
+    });
+}
+</script>
+
+</body>
+</html>

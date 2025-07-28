@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin İlan Onayı</title>
+  <style>
+    body { font-family: Arial; padding: 20px; background: #fafafa; }
+    h2 { text-align: center; }
+    .ilanlar { max-width: 1000px; margin: auto; }
+    .ilan { background: white; padding: 15px; margin-bottom: 10px; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
+    button { margin-right: 10px; padding: 8px 12px; border: none; border-radius: 6px; cursor: pointer; }
+    .onayla { background: #28a745; color: white; }
+    .reddet { background: #dc3545; color: white; }
+  </style>
+</head>
+<body>
+
+<h2>📋 Bekleyen İlanlar (Admin Panel)</h2>
+<div class="ilanlar" id="ilanlar"></div>
+
+<script>
+const token = localStorage.getItem("admin_token") || prompt("Admin JWT token:");
+function listele() {
+  fetch("/api/admin/ilanlar/bekleyen", {
+    headers: { "Authorization": "Bearer " + token }
+  })
+  .then(res => res.json())
+  .then(data => {
+    const div = document.getElementById("ilanlar");
+    data.forEach(ilan => {
+      const el = document.createElement("div");
+      el.className = "ilan";
+      el.innerHTML = `
+        <h3>${ilan.title}</h3>
+        <p><b>Fiyat:</b> ₺${ilan.price}</p>
+        <p><b>Kategori:</b> ${ilan.category}</p>
+        <button class="onayla" onclick="onayla(${ilan.id})">✅ Onayla</button>
+        <button class="reddet" onclick="reddet(${ilan.id})">❌ Reddet</button>
+      `;
+      div.appendChild(el);
+    });
+  });
+}
+function onayla(id) {
+  fetch(`/api/admin/ilan/${id}/onayla`, {
+    method: "POST", headers: { "Authorization": "Bearer " + token }
+  }).then(() => window.location.reload());
+}
+function reddet(id) {
+  fetch(`/api/admin/ilan/${id}/reddet`, {
+    method: "DELETE", headers: { "Authorization": "Bearer " + token }
+  }).then(() => window.location.reload());
+}
+listele();
+</script>
+
+</body>
+</html>

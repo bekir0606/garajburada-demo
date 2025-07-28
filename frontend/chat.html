@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mesajlaşma</title>
+</head>
+<body>
+    <h2>Mesaj Gönder</h2>
+    <form onsubmit="sendMessage(event)">
+        <input type="email" id="fromEmail" placeholder="Gönderen Email" required />
+        <input type="email" id="toEmail" placeholder="Alıcı Email" required />
+        <input type="text" id="listingId" placeholder="İlan ID" required />
+        <textarea id="message" placeholder="Mesaj" required></textarea>
+        <button type="submit">Gönder</button>
+    </form>
+
+    <h2>Mesajlar</h2>
+    <div id="messageList"></div>
+
+    <script>
+        async function sendMessage(e) {
+            e.preventDefault();
+            const res = await fetch("http://localhost:8000/api/messages", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    from_email: document.getElementById("fromEmail").value,
+                    to_email: document.getElementById("toEmail").value,
+                    listing_id: document.getElementById("listingId").value,
+                    message: document.getElementById("message").value
+                })
+            });
+            const data = await res.json();
+            alert(data.message);
+        }
+
+        async function getMessages() {
+            const res = await fetch("http://localhost:8000/api/messages");
+            const messages = await res.json();
+            const list = document.getElementById("messageList");
+            messages.forEach(msg => {
+                const div = document.createElement("div");
+                div.innerHTML = `<p><b>${msg.FromEmail}</b> → <b>${msg.ToEmail}</b>: ${msg.Message}</p><hr>`;
+                list.appendChild(div);
+            });
+        }
+
+        getMessages();
+    </script>
+</body>
+</html>

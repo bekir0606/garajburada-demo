@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>İlan Ödeme Sayfası</title>
+  <style>
+    body { font-family: Arial; margin: 40px; background: #f0f2f5; }
+    .container { background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); max-width: 500px; margin: auto; }
+    input, select, button { width: 100%; padding: 10px; margin-top: 15px; border: 1px solid #ccc; border-radius: 5px; }
+    button { background-color: #28a745; color: white; font-weight: bold; cursor: pointer; }
+    button:hover { background-color: #218838; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>💳 İlan Ödeme</h2>
+  <label for="package">İlan Paketi Seç:</label>
+  <select id="package">
+    <option value="50">Standart İlan - 50₺</option>
+    <option value="100">Vitrin İlan - 100₺</option>
+    <option value="150">Acil & Vitrin İlan - 150₺</option>
+  </select>
+
+  <label for="title">İlan Başlığı:</label>
+  <input type="text" id="title" placeholder="İlan başlığınızı girin">
+
+  <button onclick="startPayment()">Ödemeye Geç</button>
+</div>
+
+<script>
+function startPayment() {
+  const price = document.getElementById("package").value;
+  const title = document.getElementById("title").value.trim();
+  if (!title) return alert("Lütfen ilan başlığı giriniz");
+
+  fetch("/api/payment/create-checkout-session", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ price, title })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.checkout_url) {
+      window.location.href = data.checkout_url;
+    } else {
+      alert("Ödeme başlatılamadı");
+    }
+  })
+  .catch(err => alert("Hata: " + err));
+}
+</script>
+
+</body>
+</html>

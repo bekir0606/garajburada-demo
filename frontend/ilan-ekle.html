@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>İlan Ekle</title>
+</head>
+<body>
+    <h2>Yeni İlan Ekle</h2>
+    <form onsubmit="submitListing(event)">
+        <input type="text" id="title" placeholder="Başlık" required />
+        <input type="text" id="description" placeholder="Açıklama" required />
+        <input type="number" id="price" placeholder="Fiyat" required />
+        <input type="email" id="email" placeholder="Email (sahip)" required />
+        <br>
+        <label><input type="checkbox" id="isFeatured" /> Vitrin</label>
+        <label><input type="checkbox" id="isUrgent" /> Acil</label>
+        <br><br>
+        <button type="submit">Ekle</button>
+    </form>
+
+    <script>
+        async function submitListing(e) {
+            e.preventDefault();
+            const res = await fetch("http://localhost:8000/api/listings", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    email: document.getElementById("email").value,
+                    title: document.getElementById("title").value,
+                    description: document.getElementById("description").value,
+                    price: document.getElementById("price").value,
+                    is_featured: document.getElementById("isFeatured").checked,
+                    is_urgent: document.getElementById("isUrgent").checked
+                })
+            });
+
+            const data = await res.json();
+            alert(data.message || "İlan eklendi!");
+        }
+    </script>
+</body>
+</html>

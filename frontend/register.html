@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kayıt Ol - Garajburada.com</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .logo h1 {
+            color: #667eea;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            text-shadow: 0 2px 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .logo p {
+            color: #6b7280;
+            font-size: 16px;
+            font-weight: 400;
+            margin: 0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #667eea;
+            font-size: 18px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px 15px 15px 50px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .links {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .links a {
+            color: #667eea;
+            text-decoration: none;
+            margin: 0 10px;
+            font-weight: 500;
+        }
+
+        .links a:hover {
+            text-decoration: underline;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border: 1px solid #bbdefb;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .info-box h3 {
+            color: #1976d2;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .info-box p {
+            color: #424242;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <div class="logo-icon">🚗</div>
+            <h1>Garajburada.com</h1>
+            <p>Hesap oluşturun</p>
+        </div>
+
+        <div class="info-box">
+            <h3>📝 Kayıt Bilgileri</h3>
+            <p>Hesabınız oluşturulduktan sonra admin onayı gereklidir. Onaylandıktan sonra giriş yapabilirsiniz.</p>
+        </div>
+
+        <div id="alert" class="alert"></div>
+
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="name">Ad Soyad</label>
+                <div class="input-group">
+                    <i>👤</i>
+                    <input type="text" id="name" name="name" class="form-control" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">E-posta Adresi</label>
+                <div class="input-group">
+                    <i>📧</i>
+                    <input type="email" id="email" name="email" class="form-control" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Telefon Numarası</label>
+                <div class="input-group">
+                    <i>📱</i>
+                    <input type="tel" id="phone" name="phone" class="form-control" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="city">Şehir</label>
+                <div class="input-group">
+                    <i>🏙️</i>
+                    <input type="text" id="city" name="city" class="form-control" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Şifre</label>
+                <div class="input-group">
+                    <i>🔒</i>
+                    <input type="password" id="password" name="password" class="form-control" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Şifre Tekrar</label>
+                <div class="input-group">
+                    <i>🔒</i>
+                    <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn" id="submitBtn">
+                <span id="btnText">Kayıt Ol</span>
+            </button>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Kayıt işlemi yapılıyor...</p>
+            </div>
+        </form>
+
+        <div class="links">
+            <a href="login.html">Zaten hesabınız var mı? Giriş yapın</a>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('registerForm');
+        const alert = document.getElementById('alert');
+        const loading = document.getElementById('loading');
+        const submitBtn = document.getElementById('submitBtn');
+        const btnText = document.getElementById('btnText');
+
+        function showAlert(message, type) {
+            alert.textContent = message;
+            alert.className = `alert alert-${type}`;
+            alert.style.display = 'block';
+            
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 5000);
+        }
+
+        function setLoading(isLoading) {
+            if (isLoading) {
+                loading.style.display = 'block';
+                submitBtn.disabled = true;
+                btnText.textContent = 'Kayıt Yapılıyor...';
+            } else {
+                loading.style.display = 'none';
+                submitBtn.disabled = false;
+                btnText.textContent = 'Kayıt Ol';
+            }
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(form);
+            const password = formData.get('password');
+            const confirmPassword = formData.get('confirmPassword');
+            
+            // Şifre kontrolü
+            if (password !== confirmPassword) {
+                showAlert('Şifreler eşleşmiyor!', 'error');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showAlert('Şifre en az 6 karakter olmalıdır!', 'error');
+                return;
+            }
+            
+            setLoading(true);
+            
+            try {
+                const response = await fetch('http://localhost:8000/api/register', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showAlert(data.message, 'success');
+                    form.reset();
+                    
+                    // 3 saniye sonra login sayfasına yönlendir
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 3000);
+                } else {
+                    showAlert(data.detail || 'Kayıt işlemi başarısız!', 'error');
+                }
+            } catch (error) {
+                showAlert('Bağlantı hatası! Backend çalışıyor mu?', 'error');
+                console.error('Error:', error);
+            } finally {
+                setLoading(false);
+            }
+        });
+
+        // Basit telefon numarası formatı
+        document.getElementById('phone').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            
+            // Sadece rakamları al ve formatla
+            if (value.length > 0) {
+                if (value.length <= 10) {
+                    value = '+90 ' + value.replace(/(\d{3})(\d{3})(\d{2})(\d{2})/, '$1 $2 $3 $4');
+                }
+            }
+            
+            e.target.value = value;
+        });
+    </script>
+</body>
+</html>

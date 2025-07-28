@@ -1,0 +1,13 @@
+
+<!-- backup_panel.html -->
+<h2>💾 Veritabanı Yedekleme</h2>
+<button onclick="startBackup()">Yedekle</button>
+<p id="status"></p>
+
+<script>
+function startBackup() {
+  fetch("/api/backup", { method: "POST" })
+    .then(res => res.text())
+    .then(msg => document.getElementById("status").innerText = msg);
+}
+</script>

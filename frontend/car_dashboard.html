@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Araç Panelim</title>
+  <style>
+    body { font-family: Arial; background: #f2f2f2; padding: 20px; }
+    h2 { color: #333; }
+    .box { background: #fff; padding: 20px; margin-bottom: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    input, select, textarea, button { width: 100%; margin-top: 10px; padding: 10px; border-radius: 6px; border: 1px solid #ccc; }
+    button { background: #007bff; color: white; font-weight: bold; cursor: pointer; }
+    button:hover { background: #0056b3; }
+  </style>
+</head>
+<body>
+
+<h2>🚗 Araç Panelim</h2>
+
+<div class="box">
+  <h3>🔧 Yeni Araç Ekle</h3>
+  <input id="plate" placeholder="Plaka (örn: 34ABC123)">
+  <input id="brand" placeholder="Marka">
+  <input id="model" placeholder="Model">
+  <input id="year" placeholder="Yıl">
+  <button onclick="addCar()">Kaydet</button>
+</div>
+
+<div class="box">
+  <h3>🛠️ Bakım Kaydı</h3>
+  <input id="car_id_maint" placeholder="Araç ID">
+  <input id="type" placeholder="Bakım Türü (örn: Yağ Değişimi)">
+  <input id="date" placeholder="Tarih (YYYY-AA-GG)">
+  <textarea id="note" placeholder="Not"></textarea>
+  <button onclick="addMaintenance()">Kaydet</button>
+</div>
+
+<div class="box">
+  <h3>📄 Sigorta/Kasko Kaydı</h3>
+  <input id="car_id_ins" placeholder="Araç ID">
+  <input id="company" placeholder="Şirket">
+  <input id="policy_no" placeholder="Poliçe No">
+  <input id="valid_until" placeholder="Geçerlilik Tarihi (YYYY-AA-GG)">
+  <button onclick="addInsurance()">Kaydet</button>
+</div>
+
+<script>
+const token = localStorage.getItem("admin_token") || prompt("JWT Token girin:");
+
+function post(url, body) {
+  return fetch(url, {
+    method: "POST",
+    headers: {
+      "Authorization": "Bearer " + token,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(body)
+  }).then(res => res.json());
+}
+
+function addCar() {
+  post("/api/car/add", {
+    plate: document.getElementById("plate").value,
+    brand: document.getElementById("brand").value,
+    model: document.getElementById("model").value,
+    year: document.getElementById("year").value
+  }).then(res => alert(res.message || "Araç kaydedildi."));
+}
+
+function addMaintenance() {
+  post("/api/car/maintenance", {
+    car_id: document.getElementById("car_id_maint").value,
+    type: document.getElementById("type").value,
+    date: document.getElementById("date").value,
+    note: document.getElementById("note").value
+  }).then(res => alert(res.message || "Bakım kaydedildi."));
+}
+
+function addInsurance() {
+  post("/api/car/insurance", {
+    car_id: document.getElementById("car_id_ins").value,
+    company: document.getElementById("company").value,
+    policy_no: document.getElementById("policy_no").value,
+    valid_until: document.getElementById("valid_until").value
+  }).then(res => alert(res.message || "Sigorta kaydedildi."));
+}
+</script>
+
+</body>
+</html>

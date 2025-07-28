@@ -1,0 +1,14 @@
+
+<!-- admin_log.html -->
+<h2>📜 Canlı İşlem Logları</h2>
+<ul id="logList"></ul>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+const socket = io();
+const list = document.getElementById("logList");
+socket.on("logData", (log) => {
+  const li = document.createElement("li");
+  li.textContent = log;
+  list.prepend(li);
+});
+</script>

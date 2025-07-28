@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Favori İlanlar</title>
+</head>
+<body>
+    <h2>Favori Ekle</h2>
+    <form onsubmit="addFavorite(event)">
+        <input type="email" id="email" placeholder="Kullanıcı Email" required />
+        <input type="number" id="listingId" placeholder="İlan ID" required />
+        <button type="submit">Favoriye Ekle</button>
+    </form>
+
+    <h2>Favori Listem</h2>
+    <div id="favoritesList"></div>
+
+    <script>
+        async function addFavorite(e) {
+            e.preventDefault();
+            const res = await fetch("http://localhost:8000/api/favorites", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    email: document.getElementById("email").value,
+                    listing_id: document.getElementById("listingId").value
+                })
+            });
+            const data = await res.json();
+            alert(data.message);
+        }
+
+        async function getFavorites() {
+            const email = prompt("Email adresinizi girin:");
+            const res = await fetch("http://localhost:8000/api/favorites/" + email);
+            const data = await res.json();
+            const list = document.getElementById("favoritesList");
+            data.forEach(item => {
+                const div = document.createElement("div");
+                div.innerHTML = `<p><b>${item.Title}</b> - ${item.Price} ₺<br>${item.Description}</p><hr>`;
+                list.appendChild(div);
+            });
+        }
+
+        getFavorites();
+    </script>
+</body>
+</html>

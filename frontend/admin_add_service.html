@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Servis/Kasko Noktası Ekle</title>
+  <style>
+    body { font-family: Arial; background: #f0f2f5; padding: 20px; }
+    .box { background: #fff; padding: 25px; border-radius: 12px; max-width: 600px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    input, button { width: 100%; padding: 12px; margin-top: 10px; border-radius: 6px; border: 1px solid #ccc; }
+    button { background: #28a745; color: white; font-weight: bold; }
+    button:hover { background: #218838; cursor: pointer; }
+    h2 { color: #333; }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h2>📍 Yeni Servis Noktası Ekle</h2>
+  <input id="name" placeholder="İsim (örn: Usta Oto)">
+  <input id="lat" placeholder="Enlem (örn: 37.0672)">
+  <input id="lon" placeholder="Boylam (örn: 37.3750)">
+  <input id="type" placeholder="Tür (örn: Tamirci, Kasko)">
+  <button onclick="addService()">Kaydet</button>
+</div>
+
+<script>
+const token = localStorage.getItem("admin_token") || prompt("JWT Token girin:");
+
+function addService() {
+  fetch("/api/services/add", {
+    method: "POST",
+    headers: {
+      "Authorization": "Bearer " + token,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      name: document.getElementById("name").value,
+      lat: document.getElementById("lat").value,
+      lon: document.getElementById("lon").value,
+      type: document.getElementById("type").value
+    })
+  })
+  .then(res => res.json())
+  .then(data => alert(data.message || "Servis kaydedildi"))
+  .catch(err => alert("Hata: " + err));
+}
+</script>
+
+</body>
+</html>

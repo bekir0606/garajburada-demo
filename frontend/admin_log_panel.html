@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Log ve İzleme</title>
+  <style>
+    body { font-family: Arial; background: #f9f9f9; padding: 20px; }
+    h2 { text-align: center; }
+    pre { background: #eee; padding: 15px; border-radius: 8px; max-width: 960px; margin: auto; height: 400px; overflow-y: auto; }
+  </style>
+</head>
+<body>
+  <h2>📊 Sistem Logları (Admin Panel)</h2>
+  <pre id="loglar">Loglar yükleniyor...</pre>
+  <script>
+    fetch("/api/admin/logs")
+      .then(r => r.text())
+      .then(data => document.getElementById("loglar").textContent = data);
+  </script>
+</body>
+</html>

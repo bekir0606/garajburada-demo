@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>İlan Ver</title>
+  <style>
+    body { font-family: Arial; background: #eef2f3; padding: 20px; }
+    .form-box { background: white; padding: 25px; max-width: 700px; margin: auto; border-radius: 10px; box-shadow: 0 0 8px rgba(0,0,0,0.1); }
+    h2 { color: #333; margin-bottom: 20px; }
+    input, select, textarea { width: 100%; margin-top: 10px; padding: 10px; border-radius: 6px; border: 1px solid #ccc; }
+    button { background: #007bff; color: white; font-weight: bold; margin-top: 15px; padding: 12px; border: none; border-radius: 6px; width: 100%; }
+    button:hover { background: #0056b3; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+<div class="form-box">
+  <h2>🚗 İlan Ver</h2>
+  <input id="title" placeholder="İlan Başlığı">
+  <select id="category">
+    <option value="Otomobil">Otomobil</option>
+    <option value="Ticari">Ticari</option>
+    <option value="SUV">SUV</option>
+    <option value="Motosiklet">Motosiklet</option>
+  </select>
+  <input id="brand" placeholder="Marka (örn: Renault)">
+  <input id="model" placeholder="Model (örn: Clio)">
+  <input id="year" type="number" placeholder="Yıl">
+  <input id="price" type="number" placeholder="Fiyat (₺)">
+  <textarea id="desc" placeholder="Açıklama" rows="4"></textarea>
+  <input id="photo" type="text" placeholder="Fotoğraf URL (örn: https://...)">
+  <button onclick="submitIlan()">İlanı Gönder</button>
+</div>
+
+<script>
+const token = localStorage.getItem("user_token") || prompt("JWT Token gir:");
+
+function submitIlan() {
+  fetch("/api/ilan/ekle", {
+    method: "POST",
+    headers: {
+      "Authorization": "Bearer " + token,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      title: document.getElementById("title").value,
+      category: document.getElementById("category").value,
+      brand: document.getElementById("brand").value,
+      model: document.getElementById("model").value,
+      year: document.getElementById("year").value,
+      price: document.getElementById("price").value,
+      description: document.getElementById("desc").value,
+      photo: document.getElementById("photo").value
+    })
+  })
+  .then(res => res.json())
+  .then(data => alert(data.message || "İlan kaydedildi"))
+  .catch(err => alert("Hata: " + err));
+}
+</script>
+
+</body>
+</html>

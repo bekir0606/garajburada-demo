@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İlan Arama - Garajburada.com</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .logo i {
+            margin-right: 0.5rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            transition: all 0.3s;
+        }
+
+        .nav-menu a:hover {
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        /* Search Section */
+        .search-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .search-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .search-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #333;
+        }
+
+        .search-title h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: #667eea;
+        }
+
+        .search-title p {
+            font-size: 1.1rem;
+            color: #666;
+        }
+
+        .search-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .search-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-input {
+            padding: 0.75rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .search-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .search-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Results Section */
+        .results-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .results-count {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .sort-options {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .sort-select {
+            padding: 0.5rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+        }
+
+        /* Listings Grid */
+        .listings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .listing-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .listing-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .listing-card.premium {
+            border: 2px solid #f59e0b;
+            box-shadow: 0 4px 20px rgba(245, 158, 11, 0.2);
+        }
+
+        .listing-card.premium-plus {
+            border: 2px solid #8b5cf6;
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.2);
+        }
+
+        .listing-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .listing-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .listing-badges {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .listing-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .badge-featured {
+            background: #ffd700;
+            color: #333;
+        }
+
+        .badge-urgent {
+            background: #ff4757;
+            color: white;
+        }
+
+        .badge-premium {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+        }
+
+        .badge-premium-plus {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+        }
+
+        .listing-price {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2ed573;
+            margin-bottom: 0.5rem;
+        }
+
+        .listing-description {
+            color: #666;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .listing-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: #888;
+        }
+
+        .listing-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a67d8;
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #667eea;
+            border: 1px solid #667eea;
+        }
+
+        .btn-outline:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .no-results i {
+            font-size: 3rem;
+            color: #ccc;
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .search-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .listings-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .results-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+            
+            .sort-options {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="logo">
+                <i class="fas fa-car"></i>Garajburada.com
+            </a>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Ana Sayfa</a></li>
+                    <li><a href="search.html">İlan Ara</a></li>
+                    <li><a href="ilan_ver.html">İlan Ver</a></li>
+                    <li><a href="login.html">Giriş Yap</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Search Section -->
+    <section class="search-section">
+        <div class="search-container">
+            <div class="search-title">
+                <h1>🔍 İlan Arama</h1>
+                <p>Premium ilanlar öncelikli olarak gösterilir</p>
+            </div>
+            
+            <form class="search-form" onsubmit="searchListings(event)">
+                <div class="search-grid">
+                    <input type="text" id="query" class="search-input" placeholder="Araç markası, model veya anahtar kelime...">
+                    <input type="number" id="minPrice" class="search-input" placeholder="Minimum fiyat">
+                    <input type="number" id="maxPrice" class="search-input" placeholder="Maksimum fiyat">
+                    <select id="category" class="search-input">
+                        <option value="">Tüm Kategoriler</option>
+                        <option value="otomobil">Otomobil</option>
+                        <option value="ticari">Ticari Araç</option>
+                        <option value="motosiklet">Motosiklet</option>
+                        <option value="deniz">Deniz Araçları</option>
+                    </select>
+                </div>
+                <button type="submit" class="search-button">
+                    <i class="fas fa-search"></i> İlanları Ara
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Results Section -->
+    <section class="results-section">
+        <div class="results-header">
+            <div class="results-count" id="resultsCount">
+                Arama yapmak için yukarıdaki formu kullanın
+            </div>
+            <div class="sort-options">
+                <label for="sortSelect">Sıralama:</label>
+                <select id="sortSelect" class="sort-select" onchange="sortResults()">
+                    <option value="premium">Premium Öncelik</option>
+                    <option value="price-low">Fiyat (Düşük-Yüksek)</option>
+                    <option value="price-high">Fiyat (Yüksek-Düşük)</option>
+                    <option value="date">Tarih (Yeni-Eski)</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="results" class="listings-grid">
+            <div class="no-results">
+                <i class="fas fa-search"></i>
+                <h3>Arama Yapın</h3>
+                <p>İlanları bulmak için yukarıdaki arama formunu kullanın</p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Demo veriler (ana sayfadaki ile aynı)
+        const demoListings = [
+            { 
+                Id: 1, 
+                Title: "2018 Renault Clio", 
+                Price: 435000, 
+                IsFeatured: true, 
+                IsUrgent: false, 
+                IsPremium: false,
+                Category: "otomobil",
+                Description: "Temiz araç, düşük km, tek sahibinden",
+                Image: "https://via.placeholder.com/300x200/667eea/ffffff?text=Renault+Clio",
+                CreatedAt: "2025-01-25"
+            },
+            { 
+                Id: 2, 
+                Title: "2020 Ford Courier", 
+                Price: 635000, 
+                IsFeatured: true, 
+                IsUrgent: true, 
+                IsPremium: false,
+                Category: "ticari",
+                Description: "Ticari araç, yeni gibi, servis kayıtlı",
+                Image: "https://via.placeholder.com/300x200/764ba2/ffffff?text=Ford+Courier",
+                CreatedAt: "2025-01-24"
+            },
+            { 
+                Id: 3, 
+                Title: "2019 Honda Civic", 
+                Price: 520000, 
+                IsFeatured: false, 
+                IsUrgent: true, 
+                IsPremium: false,
+                Category: "otomobil",
+                Description: "Spor araç, hızlı satış, düşük yakıt",
+                Image: "https://via.placeholder.com/300x200/2ed573/ffffff?text=Honda+Civic",
+                CreatedAt: "2025-01-23"
+            },
+            { 
+                Id: 4, 
+                Title: "2021 Toyota Corolla", 
+                Price: 780000, 
+                IsFeatured: true, 
+                IsUrgent: false, 
+                IsPremium: false,
+                Category: "otomobil",
+                Description: "Aile arabası, güvenli, ekonomik",
+                Image: "https://via.placeholder.com/300x200/ffd700/333333?text=Toyota+Corolla",
+                CreatedAt: "2025-01-22"
+            },
+            // Premium İlanlar
+            { 
+                Id: 5, 
+                Title: "2022 BMW 3 Serisi 320i", 
+                Price: 1250000, 
+                IsFeatured: true, 
+                IsUrgent: false, 
+                IsPremium: true,
+                PremiumType: "Premium Plus",
+                Category: "otomobil",
+                Description: "Mükemmel durumda, tek sahibinden, düşük kilometreli BMW 3 Serisi",
+                Image: "https://via.placeholder.com/300x200/f59e0b/ffffff?text=BMW+3+Series",
+                CreatedAt: "2025-01-25"
+            },
+            { 
+                Id: 6, 
+                Title: "2021 Mercedes C200", 
+                Price: 1450000, 
+                IsFeatured: true, 
+                IsUrgent: false, 
+                IsPremium: true,
+                PremiumType: "Premium",
+                Category: "otomobil",
+                Description: "Garantili, servis kayıtlı Mercedes C200. Acil satış",
+                Image: "https://via.placeholder.com/300x200/8b5cf6/ffffff?text=Mercedes+C200",
+                CreatedAt: "2025-01-24"
+            },
+            { 
+                Id: 7, 
+                Title: "2020 Audi A4 2.0 TDI", 
+                Price: 980000, 
+                IsFeatured: true, 
+                IsUrgent: false, 
+                IsPremium: true,
+                PremiumType: "Premium Plus",
+                Category: "otomobil",
+                Description: "Diesel motor, ekonomik yakıt tüketimi, konforlu sürüş",
+                Image: "https://via.placeholder.com/300x200/ef4444/ffffff?text=Audi+A4",
+                CreatedAt: "2025-01-23"
+            },
+            { 
+                Id: 8, 
+                Title: "2023 Hyundai i30", 
+                Price: 850000, 
+                IsFeatured: true, 
+                IsUrgent: false, 
+                IsPremium: true,
+                PremiumType: "Premium",
+                Category: "otomobil",
+                Description: "Yeni model, modern tasarım, teknolojik donanım",
+                Image: "https://via.placeholder.com/300x200/10b981/ffffff?text=Hyundai+i30",
+                CreatedAt: "2025-01-20"
+            }
+        ];
+
+        let currentResults = [];
+        let currentSort = 'premium';
+
+        async function searchListings(e) {
+            e.preventDefault();
+            
+            const query = document.getElementById("query").value.toLowerCase();
+            const minPrice = document.getElementById("minPrice").value;
+            const maxPrice = document.getElementById("maxPrice").value;
+            const category = document.getElementById("category").value;
+
+            // Loading göster
+            const resultsContainer = document.getElementById("results");
+            resultsContainer.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> İlanlar aranıyor...</div>';
+
+            try {
+                // API'den arama yap
+                let url = `http://localhost:8000/api/search?`;
+                if (query) url += `q=${encodeURIComponent(query)}&`;
+                if (minPrice) url += `min=${minPrice}&`;
+                if (maxPrice) url += `max=${maxPrice}&`;
+                if (category) url += `category=${category}`;
+
+                const res = await fetch(url);
+                if (res.ok) {
+                    const data = await res.json();
+                    currentResults = data;
+                } else {
+                    throw new Error("API çalışmıyor");
+                }
+            } catch (error) {
+                // Demo verilerle arama yap
+                currentResults = demoListings.filter(item => {
+                    let matches = true;
+                    
+                    // Metin araması
+                    if (query) {
+                        const searchText = `${item.Title} ${item.Description}`.toLowerCase();
+                        matches = matches && searchText.includes(query);
+                    }
+                    
+                    // Fiyat filtresi
+                    if (minPrice && item.Price < parseInt(minPrice)) {
+                        matches = false;
+                    }
+                    if (maxPrice && item.Price > parseInt(maxPrice)) {
+                        matches = false;
+                    }
+                    
+                    // Kategori filtresi
+                    if (category && item.Category !== category) {
+                        matches = false;
+                    }
+                    
+                    return matches;
+                });
+            }
+
+            // Sonuçları sırala ve göster
+            sortAndDisplayResults();
+        }
+
+        function sortAndDisplayResults() {
+            let sortedResults = [...currentResults];
+
+            switch (currentSort) {
+                case 'premium':
+                    // Premium ilanları önce göster
+                    sortedResults.sort((a, b) => {
+                        if (a.IsPremium && !b.IsPremium) return -1;
+                        if (!a.IsPremium && b.IsPremium) return 1;
+                        if (a.IsPremium && b.IsPremium) {
+                            // Premium Plus önce, sonra Premium
+                            if (a.PremiumType === "Premium Plus" && b.PremiumType === "Premium") return -1;
+                            if (a.PremiumType === "Premium" && b.PremiumType === "Premium Plus") return 1;
+                        }
+                        return 0;
+                    });
+                    break;
+                case 'price-low':
+                    sortedResults.sort((a, b) => a.Price - b.Price);
+                    break;
+                case 'price-high':
+                    sortedResults.sort((a, b) => b.Price - a.Price);
+                    break;
+                case 'date':
+                    sortedResults.sort((a, b) => new Date(b.CreatedAt) - new Date(a.CreatedAt));
+                    break;
+            }
+
+            displayResults(sortedResults);
+        }
+
+        function sortResults() {
+            currentSort = document.getElementById("sortSelect").value;
+            sortAndDisplayResults();
+        }
+
+        function displayResults(listings) {
+            const container = document.getElementById("results");
+            const resultsCount = document.getElementById("resultsCount");
+
+            if (listings.length === 0) {
+                container.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-search"></i>
+                        <h3>Sonuç Bulunamadı</h3>
+                        <p>Arama kriterlerinize uygun ilan bulunamadı. Farklı anahtar kelimeler deneyin.</p>
+                    </div>
+                `;
+                resultsCount.textContent = "0 sonuç bulundu";
+                return;
+            }
+
+            resultsCount.textContent = `${listings.length} sonuç bulundu`;
+
+            container.innerHTML = listings.map(item => {
+                const badges = [];
+                if (item.IsFeatured) badges.push('<span class="listing-badge badge-featured">Vitrin</span>');
+                if (item.IsUrgent) badges.push('<span class="listing-badge badge-urgent">Acil</span>');
+                if (item.IsPremium) {
+                    if (item.PremiumType === "Premium Plus") {
+                        badges.push('<span class="listing-badge badge-premium-plus">Premium Plus</span>');
+                    } else {
+                        badges.push('<span class="listing-badge badge-premium">Premium</span>');
+                    }
+                }
+
+                const cardClass = item.IsPremium ? 
+                    (item.PremiumType === "Premium Plus" ? "listing-card premium-plus" : "listing-card premium") : 
+                    "listing-card";
+
+                return `
+                    <div class="${cardClass}">
+                        <div class="listing-header">
+                            <div>
+                                <h3 class="listing-title">${item.Title}</h3>
+                                <div class="listing-badges">${badges.join('')}</div>
+                            </div>
+                        </div>
+                        <div class="listing-price">${item.Price.toLocaleString()} ₺</div>
+                        <p class="listing-description">${item.Description}</p>
+                        <div class="listing-meta">
+                            <span><i class="fas fa-tag"></i> ${item.Category}</span>
+                            <span><i class="fas fa-calendar"></i> ${item.CreatedAt}</span>
+                        </div>
+                        <div class="listing-actions">
+                            <a href="ilan_detay.html?id=${item.Id}" class="btn btn-primary">
+                                <i class="fas fa-eye"></i> Detayları Gör
+                            </a>
+                            <a href="ilan_mesaj.html?id=${item.Id}" class="btn btn-outline">
+                                <i class="fas fa-comment"></i> Mesaj Gönder
+                            </a>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Sayfa yüklendiğinde tüm ilanları göster
+        document.addEventListener('DOMContentLoaded', function() {
+            currentResults = demoListings;
+            sortAndDisplayResults();
+        });
+    </script>
+</body>
+</html>

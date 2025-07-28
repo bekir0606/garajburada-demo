@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Şifremi Unuttum</title>
+</head>
+<body>
+    <h2>Şifre Sıfırlama</h2>
+    <form onsubmit="resetPassword(event)">
+        <input type="email" id="email" placeholder="Kayıtlı Email" required />
+        <input type="password" id="newPassword" placeholder="Yeni Şifre" required />
+        <button type="submit">Şifreyi Sıfırla</button>
+    </form>
+
+    <script>
+        async function resetPassword(e) {
+            e.preventDefault();
+            const res = await fetch("http://localhost:8000/api/reset-password", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    email: document.getElementById("email").value,
+                    new_password: document.getElementById("newPassword").value
+                })
+            });
+            const data = await res.json();
+            alert(data.message || "İşlem tamamlandı.");
+        }
+    </script>
+</body>
+</html>

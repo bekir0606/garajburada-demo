@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>İlan Mesajlaşma</title>
+  <style>
+    body { font-family: Arial; background: #f4f4f4; padding: 20px; }
+    .chat-box { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 8px rgba(0,0,0,0.1); }
+    h2 { text-align: center; }
+    #messages { height: 300px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; background: #f9f9f9; border-radius: 6px; }
+    .msg { margin: 6px 0; padding: 8px; background: #e1e1e1; border-radius: 6px; max-width: 70%; }
+    .me { background: #007bff; color: white; margin-left: auto; text-align: right; }
+    .msg-wrapper { display: flex; flex-direction: column; }
+    input { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; margin-top: 8px; }
+    button { padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 6px; margin-top: 10px; }
+    button:hover { background: #218838; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+<div class="chat-box">
+  <h2>💬 İlan Mesajlaşma</h2>
+  <div id="messages" class="msg-wrapper"></div>
+  <input id="msgText" placeholder="Mesajınızı yazın...">
+  <button onclick="gonder()">Gönder</button>
+</div>
+
+<script>
+const token = localStorage.getItem("user_token") || prompt("JWT token giriniz:");
+const ilanId = new URLSearchParams(window.location.search).get("id");
+
+function listeleMesajlar() {
+  fetch(`/api/ilan/${ilanId}/mesajlar`, {
+    headers: { "Authorization": "Bearer " + token }
+  })
+    .then(res => res.json())
+    .then(data => {
+      const box = document.getElementById("messages");
+      box.innerHTML = "";
+      data.forEach(m => {
+        const div = document.createElement("div");
+        div.className = "msg " + (m.sender == "me" ? "me" : "");
+        div.textContent = m.text;
+        box.appendChild(div);
+      });
+      box.scrollTop = box.scrollHeight;
+    });
+}
+
+function gonder() {
+  const text = document.getElementById("msgText").value;
+  if (!text) return;
+  fetch(`/api/ilan/${ilanId}/mesaj`, {
+    method: "POST",
+    headers: {
+      "Authorization": "Bearer " + token,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ text })
+  }).then(() => {
+    document.getElementById("msgText").value = "";
+    listeleMesajlar();
+  });
+}
+
+listeleMesajlar();
+</script>
+
+</body>
+</html>

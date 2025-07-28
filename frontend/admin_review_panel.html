@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin - Yorum Yönetimi</title>
+  <style>
+    body { font-family: Arial; background: #f2f2f2; padding: 20px; }
+    h2 { color: #333; }
+    .review-box { background: white; padding: 15px; margin-bottom: 15px; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
+    button { background: #dc3545; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; }
+    button:hover { background: #c82333; }
+  </style>
+</head>
+<body>
+
+<h2>🛠️ Admin - Yorum Yönetimi</h2>
+<div id="reviews"></div>
+
+<script>
+const token = localStorage.getItem("admin_token") || prompt("Admin JWT token gir:");
+
+function fetchAllReviews() {
+  fetch("/api/services")
+    .then(res => res.json())
+    .then(services => {
+      services.forEach(service => {
+        fetch(`/api/services/reviews/${service.id}`)
+          .then(res => res.json())
+          .then(reviews => {
+            reviews.forEach((review, index) => {
+              const box = document.createElement("div");
+              box.className = "review-box";
+              box.innerHTML = `
+                <b>Servis:</b> ${service.name}<br>
+                <b>Puan:</b> ${review.rating} / 5<br>
+                <b>Yorum:</b> ${review.comment}<br><br>
+                <button onclick="deleteReview(${index + 1})">🗑️ Sil</button>
+              `;
+              document.getElementById("reviews").appendChild(box);
+            });
+          });
+      });
+    });
+}
+
+function deleteReview(id) {
+  if (!confirm("Bu yorumu silmek istiyor musunuz?")) return;
+  fetch(`/api/services/review/delete/${id}`, {
+    method: "DELETE",
+    headers: { "Authorization": "Bearer " + token }
+  })
+  .then(res => res.json())
+  .then(data => {
+    alert(data.message);
+    location.reload();
+  });
+}
+
+fetchAllReviews();
+</script>
+
+</body>
+</html>

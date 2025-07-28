@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bakım Modu - Garajburada.com</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #1e293b;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .maintenance-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 3rem;
+            text-align: center;
+            max-width: 600px;
+            width: 90%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .maintenance-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 51, 234, 0.1) 100%);
+            border-radius: 50%;
+            z-index: 0;
+        }
+
+        .maintenance-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .maintenance-icon {
+            font-size: 4rem;
+            color: #3b82f6;
+            margin-bottom: 1.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .maintenance-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+
+        .maintenance-subtitle {
+            font-size: 1.2rem;
+            color: #64748b;
+            margin-bottom: 2rem;
+        }
+
+        .maintenance-message {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .maintenance-message h3 {
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .maintenance-message p {
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        .maintenance-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-item {
+            background: #f1f5f9;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .info-item h4 {
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .info-item p {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .maintenance-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+            transform: translateY(-2px);
+        }
+
+        .maintenance-footer {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e2e8f0;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            border-radius: 4px;
+            animation: progress 3s ease-in-out infinite;
+        }
+
+        @keyframes progress {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+
+        .estimated-time {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .maintenance-container {
+                padding: 2rem;
+                margin: 1rem;
+            }
+
+            .maintenance-title {
+                font-size: 2rem;
+            }
+
+            .maintenance-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="maintenance-container">
+        <div class="maintenance-content">
+            <div class="maintenance-icon">
+                <i class="fas fa-tools"></i>
+            </div>
+            
+            <h1 class="maintenance-title">Bakım Modu</h1>
+            <p class="maintenance-subtitle">Site şu anda bakımda, lütfen bekleyiniz...</p>
+            
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+            
+            <p class="estimated-time">Tahmini tamamlanma süresi: <strong>30 dakika</strong></p>
+            
+            <div class="maintenance-message">
+                <h3><i class="fas fa-info-circle"></i> Bakım Hakkında</h3>
+                <p>Site bakımda olduğu için geçici olarak erişilemiyor. Sistem güncellemeleri ve iyileştirmeler yapıyoruz. Lütfen daha sonra tekrar deneyiniz.</p>
+            </div>
+            
+            <div class="maintenance-info">
+                <div class="info-item">
+                    <h4><i class="fas fa-clock"></i> Başlangıç</h4>
+                    <p>25 Aralık 2025<br>14:30</p>
+                </div>
+                <div class="info-item">
+                    <h4><i class="fas fa-calendar-check"></i> Tahmini Bitiş</h4>
+                    <p>25 Aralık 2025<br>15:00</p>
+                </div>
+                <div class="info-item">
+                    <h4><i class="fas fa-cog"></i> Güncelleme Türü</h4>
+                    <p>Sistem İyileştirmeleri<br>Güvenlik Güncellemeleri</p>
+                </div>
+            </div>
+            
+            <div class="maintenance-actions">
+                <button class="btn btn-primary" onclick="checkStatus()">
+                    <i class="fas fa-sync-alt"></i> Durumu Kontrol Et
+                </button>
+                <a href="mailto:info@garajburada.com" class="btn btn-secondary">
+                    <i class="fas fa-envelope"></i> İletişim
+                </a>
+            </div>
+            
+            <div class="maintenance-footer">
+                <p>&copy; 2025 Garajburada.com - Tüm hakları saklıdır.</p>
+                <p>Bakım süresi boyunca sabırınız için teşekkür ederiz.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function checkStatus() {
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Kontrol Ediliyor...';
+            btn.disabled = true;
+            
+            // Simulate status check
+            setTimeout(() => {
+                btn.innerHTML = '<i class="fas fa-check"></i> Hala Bakımda';
+                btn.style.background = '#f59e0b';
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                    btn.style.background = '';
+                }, 2000);
+            }, 1500);
+        }
+
+        // Auto-refresh every 30 seconds
+        setInterval(() => {
+            // Check if maintenance is still active
+            // In real implementation, this would make an API call
+        }, 30000);
+
+        // Show current time
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('tr-TR');
+            const dateString = now.toLocaleDateString('tr-TR');
+            
+            // Update any time displays if needed
+        }
+
+        updateTime();
+        setInterval(updateTime, 1000);
+    </script>
+</body>
+</html> 

@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profilim - Garajburada.com</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8fafc;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+            color: white;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 3fr;
+            gap: 2rem;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        .profile-card {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 1rem;
+            border: 4px solid #667eea;
+        }
+
+        .profile-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-email {
+            color: #64748b;
+            margin-bottom: 1rem;
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: #64748b;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .sidebar-nav a:hover,
+        .sidebar-nav a.active {
+            background: #667eea;
+            color: white;
+        }
+
+        /* Content Area */
+        .content-area {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .content-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1e293b;
+        }
+
+        .add-btn {
+            padding: 0.75rem 1.5rem;
+            background: #10b981;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .add-btn:hover {
+            background: #059669;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            color: #64748b;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Listings Grid */
+        .listings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .listing-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .listing-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .listing-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .listing-content {
+            padding: 1rem;
+        }
+
+        .listing-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #1e293b;
+        }
+
+        .listing-price {
+            color: #10b981;
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .listing-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        .listing-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            padding: 0.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .edit-btn {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .edit-btn:hover {
+            background: #2563eb;
+        }
+
+        .delete-btn {
+            background: #ef4444;
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background: #dc2626;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .status-active {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-rejected {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* Messages */
+        .message-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .message-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .message-content {
+            flex: 1;
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .message-sender {
+            font-weight: bold;
+            color: #1e293b;
+        }
+
+        .message-time {
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        .message-text {
+            color: #4a5568;
+            margin-bottom: 0.5rem;
+        }
+
+        .message-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .reply-btn {
+            padding: 0.25rem 0.75rem;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        /* Settings Form */
+        .settings-form {
+            max-width: 600px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        .save-btn {
+            padding: 0.75rem 2rem;
+            background: #10b981;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .save-btn:hover {
+            background: #059669;
+        }
+
+        /* Alert */
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .alert.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .alert.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .listings-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs {
+                flex-wrap: wrap;
+            }
+
+            .content-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="logo">🚗 Garajburada.com</a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="index.html">Ana Sayfa</a></li>
+                    <li><a href="#listings">İlanlar</a></li>
+                    <li><a href="#about">Hakkımızda</a></li>
+                    <li><a href="login.html">Çıkış</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="profile-card">
+                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face" 
+                     alt="Profil Fotoğrafı" class="profile-avatar">
+                <div class="profile-name">Ahmet Yılmaz</div>
+                <div class="profile-email">ahmet.yilmaz@email.com</div>
+                
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">5</div>
+                        <div class="stat-label">İlanım</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">12</div>
+                        <div class="stat-label">Favori</div>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="#profile" class="active" onclick="showTab('profile')">
+                        <i class="fas fa-user"></i> Profil Bilgileri
+                    </a></li>
+                    <li><a href="#listings" onclick="showTab('listings')">
+                        <i class="fas fa-car"></i> İlanlarım
+                    </a></li>
+                    <li><a href="#favorites" onclick="showTab('favorites')">
+                        <i class="fas fa-heart"></i> Favorilerim
+                    </a></li>
+                    <li><a href="#messages" onclick="showTab('messages')">
+                        <i class="fas fa-envelope"></i> Mesajlarım
+                    </a></li>
+                    <li><a href="#settings" onclick="showTab('settings')">
+                        <i class="fas fa-cog"></i> Ayarlar
+                    </a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content-area">
+            <!-- Profile Tab -->
+            <div id="profile-tab" class="tab-content active">
+                <div class="content-header">
+                    <h2 class="content-title">Profil Bilgileri</h2>
+                </div>
+                
+                <div class="settings-form">
+                    <div id="profileAlert" class="alert"></div>
+                    
+                    <div class="form-group">
+                        <label for="fullName">Ad Soyad</label>
+                        <input type="text" id="fullName" value="Ahmet Yılmaz">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">E-posta</label>
+                        <input type="email" id="email" value="ahmet.yilmaz@email.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Telefon</label>
+                        <input type="tel" id="phone" value="+90 555 123 4567">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="location">Şehir</label>
+                        <select id="location">
+                            <option value="istanbul" selected>İstanbul</option>
+                            <option value="ankara">Ankara</option>
+                            <option value="izmir">İzmir</option>
+                            <option value="bursa">Bursa</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="bio">Hakkımda</label>
+                        <textarea id="bio" placeholder="Kendiniz hakkında kısa bir açıklama...">Araç alım satım konusunda deneyimli bir kullanıcıyım. Güvenilir ve kaliteli araçlar satıyorum.</textarea>
+                    </div>
+                    
+                    <button class="save-btn" onclick="saveProfile()">
+                        <i class="fas fa-save"></i> Profili Kaydet
+                    </button>
+                </div>
+            </div>
+
+            <!-- Listings Tab -->
+            <div id="listings-tab" class="tab-content">
+                <div class="content-header">
+                    <h2 class="content-title">İlanlarım</h2>
+                    <a href="add-listing.html" class="add-btn">
+                        <i class="fas fa-plus"></i> Yeni İlan Ekle
+                    </a>
+                </div>
+
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="showListingTab('all')">Tümü (5)</button>
+                    <button class="tab-btn" onclick="showListingTab('active')">Aktif (3)</button>
+                    <button class="tab-btn" onclick="showListingTab('pending')">Bekleyen (1)</button>
+                    <button class="tab-btn" onclick="showListingTab('rejected')">Reddedilen (1)</button>
+                </div>
+
+                <div id="all-listings" class="tab-content active">
+                    <div class="listings-grid">
+                        <div class="listing-card">
+                            <img src="https://images.unsplash.com/photo-1555215695-3004980ad54e?w=400&h=200&fit=crop" alt="BMW 3 Serisi" class="listing-image">
+                            <div class="listing-content">
+                                <div class="listing-title">2020 BMW 3 Serisi 320i</div>
+                                <div class="listing-price">₺850,000</div>
+                                <div class="listing-meta">
+                                    <span>15 Şubat 2025</span>
+                                    <span class="status-badge status-active">Aktif</span>
+                                </div>
+                                <div class="listing-actions">
+                                    <button class="action-btn edit-btn" onclick="editListing(1)">
+                                        <i class="fas fa-edit"></i> Düzenle
+                                    </button>
+                                    <button class="action-btn delete-btn" onclick="deleteListing(1)">
+                                        <i class="fas fa-trash"></i> Sil
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="listing-card">
+                            <img src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400&h=200&fit=crop" alt="Mercedes C Serisi" class="listing-image">
+                            <div class="listing-content">
+                                <div class="listing-title">2019 Mercedes C Serisi C200</div>
+                                <div class="listing-price">₺820,000</div>
+                                <div class="listing-meta">
+                                    <span>10 Şubat 2025</span>
+                                    <span class="status-badge status-active">Aktif</span>
+                                </div>
+                                <div class="listing-actions">
+                                    <button class="action-btn edit-btn" onclick="editListing(2)">
+                                        <i class="fas fa-edit"></i> Düzenle
+                                    </button>
+                                    <button class="action-btn delete-btn" onclick="deleteListing(2)">
+                                        <i class="fas fa-trash"></i> Sil
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="listing-card">
+                            <img src="https://images.unsplash.com/photo-1582639510494-c80b5de9f148?w=400&h=200&fit=crop" alt="Audi A4" class="listing-image">
+                            <div class="listing-content">
+                                <div class="listing-title">2021 Audi A4 2.0 TDI</div>
+                                <div class="listing-price">₺780,000</div>
+                                <div class="listing-meta">
+                                    <span>8 Şubat 2025</span>
+                                    <span class="status-badge status-pending">Bekliyor</span>
+                                </div>
+                                <div class="listing-actions">
+                                    <button class="action-btn edit-btn" onclick="editListing(3)">
+                                        <i class="fas fa-edit"></i> Düzenle
+                                    </button>
+                                    <button class="action-btn delete-btn" onclick="deleteListing(3)">
+                                        <i class="fas fa-trash"></i> Sil
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rejected Listings Tab -->
+                <div id="rejected-listings" class="tab-content">
+                    <div class="listings-grid">
+                        <div class="listing-card">
+                            <img src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=400&h=200&fit=crop" alt="Volkswagen Golf GTI" class="listing-image">
+                            <div class="listing-content">
+                                <div class="listing-title">2017 Volkswagen Golf GTI</div>
+                                <div class="listing-price">₺450,000</div>
+                                <div class="listing-meta">
+                                    <span>18 Şubat 2025</span>
+                                    <span class="status-badge status-rejected">İlan reddedildi</span>
+                                </div>
+                                <div class="listing-actions">
+                                    <button class="action-btn edit-btn" onclick="editListing(4)">
+                                        <i class="fas fa-edit"></i> Düzenle
+                                    </button>
+                                    <button class="action-btn delete-btn" onclick="deleteListing(4)">
+                                        <i class="fas fa-trash"></i> Sil
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Favorites Tab -->
+            <div id="favorites-tab" class="tab-content">
+                <div class="content-header">
+                    <h2 class="content-title">Favorilerim</h2>
+                </div>
+
+                <div class="listings-grid">
+                    <div class="listing-card">
+                        <img src="https://images.unsplash.com/photo-1555215695-3004980ad54e?w=400&h=200&fit=crop" alt="BMW X5" class="listing-image">
+                        <div class="listing-content">
+                            <div class="listing-title">2021 BMW X5 xDrive40i</div>
+                            <div class="listing-price">₺1,250,000</div>
+                            <div class="listing-meta">
+                                <span>İstanbul, Beşiktaş</span>
+                                <span>2 gün önce</span>
+                            </div>
+                            <div class="listing-actions">
+                                <button class="action-btn edit-btn" onclick="viewListing(1)">
+                                    <i class="fas fa-eye"></i> Görüntüle
+                                </button>
+                                <button class="action-btn delete-btn" onclick="removeFavorite(1)">
+                                    <i class="fas fa-heart-broken"></i> Favorilerden Çıkar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="listing-card">
+                        <img src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400&h=200&fit=crop" alt="Mercedes GLC" class="listing-image">
+                        <div class="listing-content">
+                            <div class="listing-title">2020 Mercedes GLC 200</div>
+                            <div class="listing-price">₺1,180,000</div>
+                            <div class="listing-meta">
+                                <span>İstanbul, Kadıköy</span>
+                                <span>1 hafta önce</span>
+                            </div>
+                            <div class="listing-actions">
+                                <button class="action-btn edit-btn" onclick="viewListing(2)">
+                                    <i class="fas fa-eye"></i> Görüntüle
+                                </button>
+                                <button class="action-btn delete-btn" onclick="removeFavorite(2)">
+                                    <i class="fas fa-heart-broken"></i> Favorilerden Çıkar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Messages Tab -->
+            <div id="messages-tab" class="tab-content">
+                <div class="content-header">
+                    <h2 class="content-title">Mesajlarım</h2>
+                </div>
+
+                <div class="message-item">
+                    <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face" alt="Kullanıcı" class="message-avatar">
+                    <div class="message-content">
+                        <div class="message-header">
+                            <span class="message-sender">Ayşe Demir</span>
+                            <span class="message-time">2 saat önce</span>
+                        </div>
+                        <div class="message-text">BMW 3 Serisi hakkında bilgi almak istiyorum. Test sürüşü yapabilir miyiz?</div>
+                        <div class="message-actions">
+                            <button class="reply-btn" onclick="replyMessage(1)">Yanıtla</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="message-item">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face" alt="Kullanıcı" class="message-avatar">
+                    <div class="message-content">
+                        <div class="message-header">
+                            <span class="message-sender">Mehmet Kaya</span>
+                            <span class="message-time">1 gün önce</span>
+                        </div>
+                        <div class="message-text">Mercedes C Serisi fiyatında pazarlık payı var mı?</div>
+                        <div class="message-actions">
+                            <button class="reply-btn" onclick="replyMessage(2)">Yanıtla</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="settings-tab" class="tab-content">
+                <div class="content-header">
+                    <h2 class="content-title">Hesap Ayarları</h2>
+                </div>
+
+                <div class="settings-form">
+                    <div id="settingsAlert" class="alert"></div>
+                    
+                    <div class="form-group">
+                        <label for="currentPassword">Mevcut Şifre</label>
+                        <input type="password" id="currentPassword">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="newPassword">Yeni Şifre</label>
+                        <input type="password" id="newPassword">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirmPassword">Yeni Şifre (Tekrar)</label>
+                        <input type="password" id="confirmPassword">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="notifications">Bildirimler</label>
+                        <select id="notifications">
+                            <option value="all">Tüm Bildirimler</option>
+                            <option value="important">Sadece Önemli</option>
+                            <option value="none">Bildirim Yok</option>
+                        </select>
+                    </div>
+                    
+                    <button class="save-btn" onclick="saveSettings()">
+                        <i class="fas fa-save"></i> Ayarları Kaydet
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab Functions
+        function showTab(tabName) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Remove active class from all nav links
+            const navLinks = document.querySelectorAll('.sidebar-nav a');
+            navLinks.forEach(link => link.classList.remove('active'));
+
+            // Show selected tab
+            const selectedTab = document.getElementById(tabName + '-tab');
+            if (selectedTab) {
+                selectedTab.classList.add('active');
+            }
+
+            // Add active class to clicked nav link
+            event.target.classList.add('active');
+        }
+
+        function showListingTab(tabName) {
+            // Hide all listing tabs
+            const listingTabs = document.querySelectorAll('#listings-tab .tab-content');
+            listingTabs.forEach(tab => tab.classList.remove('active'));
+
+            // Remove active class from all tab buttons
+            const tabButtons = document.querySelectorAll('#listings-tab .tab-btn');
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+
+            // Show selected tab
+            const selectedTab = document.getElementById(tabName + '-listings');
+            if (selectedTab) {
+                selectedTab.classList.add('active');
+            }
+
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+
+        // Profile Functions
+        function saveProfile() {
+            showAlert('Profil bilgileri kaydediliyor...', 'success');
+            setTimeout(() => {
+                showAlert('Profil bilgileri başarıyla güncellendi!', 'success');
+            }, 1500);
+        }
+
+        function saveSettings() {
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (newPassword && newPassword !== confirmPassword) {
+                showAlert('Yeni şifreler eşleşmiyor!', 'error');
+                return;
+            }
+
+            showAlert('Ayarlar kaydediliyor...', 'success');
+            setTimeout(() => {
+                showAlert('Ayarlar başarıyla güncellendi!', 'success');
+                document.getElementById('newPassword').value = '';
+                document.getElementById('confirmPassword').value = '';
+            }, 1500);
+        }
+
+        // Listing Functions
+        function editListing(id) {
+            showAlert(`İlan ${id} düzenleme sayfasına yönlendiriliyorsunuz...`, 'success');
+            setTimeout(() => {
+                window.location.href = 'add-listing.html?edit=' + id;
+            }, 1000);
+        }
+
+        function deleteListing(id) {
+            if (confirm('Bu ilanı silmek istediğinizden emin misiniz?')) {
+                showAlert(`İlan ${id} siliniyor...`, 'success');
+                setTimeout(() => {
+                    showAlert('İlan başarıyla silindi!', 'success');
+                }, 1000);
+            }
+        }
+
+        function viewListing(id) {
+            window.location.href = 'listing.html?id=' + id;
+        }
+
+        function removeFavorite(id) {
+            if (confirm('Bu ilanı favorilerden çıkarmak istediğinizden emin misiniz?')) {
+                showAlert(`İlan ${id} favorilerden çıkarılıyor...`, 'success');
+                setTimeout(() => {
+                    showAlert('İlan favorilerden çıkarıldı!', 'success');
+                }, 1000);
+            }
+        }
+
+        // Message Functions
+        function replyMessage(id) {
+            showAlert(`Mesaj ${id} için yanıt formu açılıyor...`, 'success');
+            setTimeout(() => {
+                showAlert('Yanıt formu açıldı!', 'success');
+            }, 1000);
+        }
+
+        // Alert Function
+        function showAlert(message, type) {
+            const alert = document.getElementById('profileAlert') || document.getElementById('settingsAlert');
+            if (alert) {
+                alert.textContent = message;
+                alert.className = `alert ${type}`;
+                alert.style.display = 'block';
+                
+                setTimeout(() => {
+                    alert.style.display = 'none';
+                }, 5000);
+            }
+        }
+    </script>
+</body>
+</html> 

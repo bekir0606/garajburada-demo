@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Açık Artırma</title>
+</head>
+<body>
+    <h2>Açık Artırma Başlat</h2>
+    <form onsubmit="startAuction(event)">
+        <input type="number" id="listingId" placeholder="İlan ID" required />
+        <input type="number" id="startingPrice" placeholder="Başlangıç Fiyatı" required />
+        <input type="number" id="duration" placeholder="Süre (dk)" required />
+        <button type="submit">Başlat</button>
+    </form>
+
+    <h2>Teklif Ver</h2>
+    <form onsubmit="placeBid(event)">
+        <input type="number" id="auctionId" placeholder="Açık Artırma ID" required />
+        <input type="text" id="bidder" placeholder="Kullanıcı Email" required />
+        <input type="number" id="bid" placeholder="Teklif (₺)" required />
+        <button type="submit">Teklif Ver</button>
+    </form>
+
+    <h2>Aktif Açık Artırmalar</h2>
+    <div id="auctions"></div>
+
+    <script>
+        async function startAuction(e) {
+            e.preventDefault();
+            const res = await fetch("http://localhost:8000/api/auction/start", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    listing_id: document.getElementById("listingId").value,
+                    starting_price: document.getElementById("startingPrice").value,
+                    duration_minutes: document.getElementById("duration").value
+                })
+            });
+            const data = await res.json();
+            alert(data.message);
+        }
+
+        async function placeBid(e) {
+            e.preventDefault();
+            const res = await fetch("http://localhost:8000/api/auction/bid", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    auction_id: document.getElementById("auctionId").value,
+                    bidder_email: document.getElementById("bidder").value,
+                    bid_amount: document.getElementById("bid").value
+                })
+            });
+            const data = await res.json();
+            alert(data.message);
+        }
+
+        async function fetchAuctions() {
+            const res = await fetch("http://localhost:8000/api/auction/active");
+            const data = await res.json();
+            const div = document.getElementById("auctions");
+            div.innerHTML = "";
+            data.forEach(a => {
+                div.innerHTML += `<p><b>Auction ${a.Id}</b> - İlan: ${a.ListingId}, Şu anki: ${a.CurrentPrice}₺</p><hr>`;
+            });
+        }
+
+        fetchAuctions();
+    </script>
+</body>
+</html>

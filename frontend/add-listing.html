@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yeni İlan Ekle - Garajburada.com</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8fafc;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+            color: white;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: #64748b;
+            font-size: 1.1rem;
+        }
+
+        /* Form Container */
+        .form-container {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        /* Form Sections */
+        .form-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #1e293b;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group textarea {
+            height: 120px;
+            resize: vertical;
+        }
+
+        .required {
+            color: #ef4444;
+        }
+
+        /* Image Upload */
+        .image-upload {
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            transition: border-color 0.3s;
+            cursor: pointer;
+        }
+
+        .image-upload:hover {
+            border-color: #667eea;
+        }
+
+        .image-upload.dragover {
+            border-color: #667eea;
+            background: #f8fafc;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: #9ca3af;
+            margin-bottom: 1rem;
+        }
+
+        .upload-text {
+            color: #6b7280;
+            margin-bottom: 1rem;
+        }
+
+        .upload-btn {
+            padding: 0.75rem 1.5rem;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .upload-btn:hover {
+            background: #5a67d8;
+        }
+
+        .image-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .preview-item {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .preview-image {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+        }
+
+        .remove-image {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        /* Features */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .feature-item:hover {
+            background: #f8fafc;
+            border-color: #667eea;
+        }
+
+        .feature-item.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .feature-checkbox {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Preview Panel */
+        .preview-panel {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1.5rem;
+            position: sticky;
+            top: 2rem;
+        }
+
+        .preview-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+
+        .preview-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .preview-image-main {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+
+        .preview-info {
+            margin-bottom: 0.5rem;
+        }
+
+        .preview-label {
+            font-weight: 500;
+            color: #64748b;
+        }
+
+        .preview-value {
+            color: #1e293b;
+        }
+
+        .preview-price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #10b981;
+            margin-top: 1rem;
+        }
+
+        /* Form Actions */
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #059669;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        .btn-outline {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-outline:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        /* Alert */
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .alert.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .alert.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #10b981;
+            transition: width 0.3s;
+            width: 0%;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="logo">🚗 Garajburada.com</a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="index.html">Ana Sayfa</a></li>
+                    <li><a href="profile.html">Profilim</a></li>
+                    <li><a href="login.html">Çıkış</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">Yeni İlan Ekle</h1>
+            <p class="page-subtitle">Aracınızı satışa çıkarın ve potansiyel alıcılarla buluşturun</p>
+        </div>
+
+        <div class="form-container">
+            <div id="formAlert" class="alert"></div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+
+            <form id="listingForm">
+                <div class="form-grid">
+                    <!-- Left Column - Form -->
+                    <div class="form-left">
+                        <!-- Basic Information -->
+                        <div class="form-section">
+                            <h2 class="section-title">Temel Bilgiler</h2>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="brand">Marka <span class="required">*</span></label>
+                                    <select id="brand" required onchange="updateModels()">
+                                        <option value="">Marka Seçin</option>
+                                        <option value="bmw">BMW</option>
+                                        <option value="mercedes">Mercedes-Benz</option>
+                                        <option value="audi">Audi</option>
+                                        <option value="volkswagen">Volkswagen</option>
+                                        <option value="toyota">Toyota</option>
+                                        <option value="honda">Honda</option>
+                                        <option value="ford">Ford</option>
+                                        <option value="renault">Renault</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="model">Model <span class="required">*</span></label>
+                                    <select id="model" required>
+                                        <option value="">Önce Marka Seçin</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="year">Yıl <span class="required">*</span></label>
+                                    <select id="year" required>
+                                        <option value="">Yıl Seçin</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="price">Fiyat (₺) <span class="required">*</span></label>
+                                    <input type="number" id="price" placeholder="850000" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Technical Details -->
+                        <div class="form-section">
+                            <h2 class="section-title">Teknik Özellikler</h2>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="mileage">Kilometre <span class="required">*</span></label>
+                                    <input type="number" id="mileage" placeholder="45000" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="fuelType">Yakıt Tipi <span class="required">*</span></label>
+                                    <select id="fuelType" required>
+                                        <option value="">Yakıt Tipi Seçin</option>
+                                        <option value="benzin">Benzin</option>
+                                        <option value="dizel">Dizel</option>
+                                        <option value="lpg">LPG</option>
+                                        <option value="elektrik">Elektrik</option>
+                                        <option value="hibrit">Hibrit</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="transmission">Vites <span class="required">*</span></label>
+                                    <select id="transmission" required>
+                                        <option value="">Vites Seçin</option>
+                                        <option value="manuel">Manuel</option>
+                                        <option value="otomatik">Otomatik</option>
+                                        <option value="yarı-otomatik">Yarı Otomatik</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="engineSize">Motor Hacmi</label>
+                                    <input type="text" id="engineSize" placeholder="2.0L">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="color">Renk</label>
+                                    <input type="text" id="color" placeholder="Beyaz">
+                                </div>
+                                <div class="form-group">
+                                    <label for="bodyType">Kasa Tipi</label>
+                                    <select id="bodyType">
+                                        <option value="">Kasa Tipi Seçin</option>
+                                        <option value="sedan">Sedan</option>
+                                        <option value="hatchback">Hatchback</option>
+                                        <option value="suv">SUV</option>
+                                        <option value="station-wagon">Station Wagon</option>
+                                        <option value="coupe">Coupe</option>
+                                        <option value="cabrio">Cabrio</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Images -->
+                        <div class="form-section">
+                            <h2 class="section-title">Fotoğraflar</h2>
+                            <div class="image-upload" onclick="document.getElementById('imageInput').click()">
+                                <div class="upload-icon">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                </div>
+                                <div class="upload-text">
+                                    Fotoğrafları buraya sürükleyin veya tıklayarak seçin
+                                </div>
+                                <button type="button" class="upload-btn">Fotoğraf Seç</button>
+                                <input type="file" id="imageInput" multiple accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
+                            </div>
+                            <div class="image-preview" id="imagePreview"></div>
+                        </div>
+
+                        <!-- Features -->
+                        <div class="form-section">
+                            <h2 class="section-title">Özellikler</h2>
+                            <div class="features-grid">
+                                <div class="feature-item" onclick="toggleFeature(this)">
+                                    <input type="checkbox" class="feature-checkbox" value="klima">
+                                    <span>Klima</span>
+                                </div>
+                                <div class="feature-item" onclick="toggleFeature(this)">
+                                    <input type="checkbox" class="feature-checkbox" value="navigasyon">
+                                    <span>Navigasyon</span>
+                                </div>
+                                <div class="feature-item" onclick="toggleFeature(this)">
+                                    <input type="checkbox" class="feature-checkbox" value="park-sensoru">
+                                    <span>Park Sensörü</span>
+                                </div>
+                                <div class="feature-item" onclick="toggleFeature(this)">
+                                    <input type="checkbox" class="feature-checkbox" value="geri-gorus-kamerasi">
+                                    <span>Geri Görüş Kamerası</span>
+                                </div>
+                                <div class="feature-item" onclick="toggleFeature(this)">
+                                    <input type="checkbox" class="feature-checkbox" value="deri-koltuk">
+                                    <span>Deri Koltuk</span>
+                                </div>
+                                <div class="feature-item" onclick="toggleFeature(this)">
+                                    <input type="checkbox" class="feature-checkbox" value="sunroof">
+                                    <span>Sunroof</span>
+                                </div>
+                                <div class="feature-item" onclick="toggleFeature(this)">
+                                    <input type="checkbox" class="feature-checkbox" value="bluetooth">
+                                    <span>Bluetooth</span>
+                                </div>
+                                <div class="feature-item" onclick="toggleFeature(this)">
+                                    <input type="checkbox" class="feature-checkbox" value="usb">
+                                    <span>USB</span>
+                                </div>
+                                <div class="feature-item" onclick="toggleFeature(this)">
+                                    <input type="checkbox" class="feature-checkbox" value="hiz-sabitleyici">
+                                    <span>Hız Sabitleyici</span>
+                                </div>
+                                <div class="feature-item" onclick="toggleFeature(this)">
+                                    <input type="checkbox" class="feature-checkbox" value="abs">
+                                    <span>ABS</span>
+                                </div>
+                                <div class="feature-item" onclick="toggleFeature(this)">
+                                    <input type="checkbox" class="feature-checkbox" value="esp">
+                                    <span>ESP</span>
+                                </div>
+                                <div class="feature-item" onclick="toggleFeature(this)">
+                                    <input type="checkbox" class="feature-checkbox" value="airbag">
+                                    <span>Airbag</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="form-section">
+                            <h2 class="section-title">Açıklama</h2>
+                            <div class="form-group">
+                                <label for="description">Araç Açıklaması <span class="required">*</span></label>
+                                <textarea id="description" placeholder="Aracınız hakkında detaylı bilgi verin..." required></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Contact Information -->
+                        <div class="form-section">
+                            <h2 class="section-title">İletişim Bilgileri</h2>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="contactName">İletişim Adı <span class="required">*</span></label>
+                                    <input type="text" id="contactName" value="Ahmet Yılmaz" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="contactPhone">Telefon <span class="required">*</span></label>
+                                    <input type="tel" id="contactPhone" value="+90 555 123 4567" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="location">Konum <span class="required">*</span></label>
+                                <select id="location" required>
+                                    <option value="">Şehir Seçin</option>
+                                    <option value="istanbul" selected>İstanbul</option>
+                                    <option value="ankara">Ankara</option>
+                                    <option value="izmir">İzmir</option>
+                                    <option value="bursa">Bursa</option>
+                                    <option value="antalya">Antalya</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column - Preview -->
+                    <div class="form-right">
+                        <div class="preview-panel">
+                            <h3 class="preview-title">İlan Önizlemesi</h3>
+                            <div class="preview-card">
+                                <img src="https://images.unsplash.com/photo-1555215695-3004980ad54e?w=400&h=200&fit=crop" 
+                                     alt="Araç Önizleme" class="preview-image-main" id="previewImage">
+                                <div class="preview-info">
+                                    <span class="preview-label">Marka/Model:</span>
+                                    <span class="preview-value" id="previewBrandModel">-</span>
+                                </div>
+                                <div class="preview-info">
+                                    <span class="preview-label">Yıl:</span>
+                                    <span class="preview-value" id="previewYear">-</span>
+                                </div>
+                                <div class="preview-info">
+                                    <span class="preview-label">Kilometre:</span>
+                                    <span class="preview-value" id="previewMileage">-</span>
+                                </div>
+                                <div class="preview-info">
+                                    <span class="preview-label">Yakıt/Vites:</span>
+                                    <span class="preview-value" id="previewFuelTransmission">-</span>
+                                </div>
+                                <div class="preview-price" id="previewPrice">₺-</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" onclick="saveDraft()">
+                        <i class="fas fa-save"></i> Taslak Kaydet
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="previewListing()">
+                        <i class="fas fa-eye"></i> Önizle
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i> İlanı Yayınla
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Initialize year options
+        function initializeYears() {
+            const yearSelect = document.getElementById('year');
+            const currentYear = 2025; // Set to 2025 as requested
+            
+            for (let year = currentYear; year >= 1990; year--) {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                yearSelect.appendChild(option);
+            }
+        }
+
+        // Brand models mapping
+        const brandModels = {
+            bmw: ['1 Serisi', '2 Serisi', '3 Serisi', '5 Serisi', '7 Serisi', 'X1', 'X3', 'X5', 'X6', 'Z4'],
+            mercedes: ['A Serisi', 'B Serisi', 'C Serisi', 'E Serisi', 'S Serisi', 'GLA', 'GLC', 'GLE', 'GLS', 'CLA'],
+            audi: ['A1', 'A3', 'A4', 'A6', 'A8', 'Q3', 'Q5', 'Q7', 'Q8', 'TT'],
+            volkswagen: ['Golf', 'Passat', 'Polo', 'Jetta', 'Tiguan', 'Touareg', 'Arteon', 'ID.3', 'ID.4'],
+            toyota: ['Corolla', 'Camry', 'Yaris', 'Auris', 'RAV4', 'Highlander', 'Prius', 'C-HR'],
+            honda: ['Civic', 'Accord', 'Jazz', 'CR-V', 'HR-V', 'Pilot', 'Insight'],
+            ford: ['Focus', 'Mondeo', 'Fiesta', 'Kuga', 'Explorer', 'Mustang', 'Puma'],
+            renault: ['Clio', 'Megane', 'Captur', 'Kadjar', 'Koleos', 'Talisman', 'Zoe']
+        };
+
+        // Update models based on selected brand
+        function updateModels() {
+            const brandSelect = document.getElementById('brand');
+            const modelSelect = document.getElementById('model');
+            const selectedBrand = brandSelect.value;
+            
+            modelSelect.innerHTML = '<option value="">Model Seçin</option>';
+            
+            if (selectedBrand && brandModels[selectedBrand]) {
+                brandModels[selectedBrand].forEach(model => {
+                    const option = document.createElement('option');
+                    option.value = model.toLowerCase().replace(/\s+/g, '-');
+                    option.textContent = model;
+                    modelSelect.appendChild(option);
+                });
+            }
+            
+            updatePreview();
+        }
+
+        // Handle image upload
+        function handleImageUpload(event) {
+            const files = event.target.files;
+            const preview = document.getElementById('imagePreview');
+            
+            for (let file of files) {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const previewItem = document.createElement('div');
+                        previewItem.className = 'preview-item';
+                        previewItem.innerHTML = `
+                            <img src="${e.target.result}" class="preview-image" alt="Preview">
+                            <button type="button" class="remove-image" onclick="removeImage(this)">×</button>
+                        `;
+                        preview.appendChild(previewItem);
+                        
+                        // Update main preview image
+                        if (preview.children.length === 1) {
+                            document.getElementById('previewImage').src = e.target.result;
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+        }
+
+        // Remove image
+        function removeImage(button) {
+            button.parentElement.remove();
+        }
+
+        // Toggle feature selection
+        function toggleFeature(element) {
+            const checkbox = element.querySelector('.feature-checkbox');
+            checkbox.checked = !checkbox.checked;
+            element.classList.toggle('selected', checkbox.checked);
+        }
+
+        // Update preview
+        function updatePreview() {
+            const brand = document.getElementById('brand');
+            const model = document.getElementById('model');
+            const year = document.getElementById('year');
+            const price = document.getElementById('price');
+            const mileage = document.getElementById('mileage');
+            const fuelType = document.getElementById('fuelType');
+            const transmission = document.getElementById('transmission');
+            
+            document.getElementById('previewBrandModel').textContent = 
+                brand.value && model.value ? `${brand.options[brand.selectedIndex].text} ${model.options[model.selectedIndex].text}` : '-';
+            document.getElementById('previewYear').textContent = year.value || '-';
+            document.getElementById('previewMileage').textContent = mileage.value ? `${mileage.value} km` : '-';
+            document.getElementById('previewFuelTransmission').textContent = 
+                fuelType.value && transmission.value ? `${fuelType.options[fuelType.selectedIndex].text} • ${transmission.options[transmission.selectedIndex].text}` : '-';
+            document.getElementById('previewPrice').textContent = price.value ? `₺${parseInt(price.value).toLocaleString()}` : '₺-';
+        }
+
+        // Save draft
+        function saveDraft() {
+            showAlert('Taslak kaydediliyor...', 'success');
+            setTimeout(() => {
+                showAlert('Taslak başarıyla kaydedildi!', 'success');
+            }, 1500);
+        }
+
+        // Preview listing
+        function previewListing() {
+            showAlert('İlan önizlemesi açılıyor...', 'success');
+            setTimeout(() => {
+                window.open('listing.html', '_blank');
+            }, 1000);
+        }
+
+        // Form submission
+        document.getElementById('listingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validate required fields
+            const requiredFields = ['brand', 'model', 'year', 'price', 'mileage', 'fuelType', 'transmission', 'description', 'contactName', 'contactPhone', 'location'];
+            let isValid = true;
+            
+            requiredFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (!field.value.trim()) {
+                    field.style.borderColor = '#ef4444';
+                    isValid = false;
+                } else {
+                    field.style.borderColor = '#d1d5db';
+                }
+            });
+            
+            if (!isValid) {
+                showAlert('Lütfen tüm zorunlu alanları doldurun!', 'error');
+                return;
+            }
+            
+            // Show success message
+            showAlert('İlan yayınlanıyor...', 'success');
+            setTimeout(() => {
+                showAlert('İlanınız başarıyla yayınlandı! Onay için bekliyor.', 'success');
+                setTimeout(() => {
+                    window.location.href = 'profile.html';
+                }, 2000);
+            }, 2000);
+        });
+
+        // Show alert
+        function showAlert(message, type) {
+            const alert = document.getElementById('formAlert');
+            alert.textContent = message;
+            alert.className = `alert ${type}`;
+            alert.style.display = 'block';
+            
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 5000);
+        }
+
+        // Update progress bar
+        function updateProgress() {
+            const form = document.getElementById('listingForm');
+            const inputs = form.querySelectorAll('input, select, textarea');
+            const filledInputs = Array.from(inputs).filter(input => input.value.trim() !== '');
+            const progress = (filledInputs.length / inputs.length) * 100;
+            
+            document.getElementById('progressFill').style.width = `${progress}%`;
+        }
+
+        // Add event listeners for progress tracking
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeYears();
+            updateProgress();
+            
+            // Add input event listeners
+            const inputs = document.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('input', updateProgress);
+                input.addEventListener('change', updatePreview);
+            });
+        });
+
+        // Drag and drop functionality
+        const uploadArea = document.querySelector('.image-upload');
+        
+        uploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        
+        uploadArea.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+        });
+        
+        uploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            const event = { target: { files: files } };
+            handleImageUpload(event);
+        });
+    </script>
+</body>
+</html> 

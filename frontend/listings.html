@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>İlanlar</title>
+</head>
+<body>
+    <h2>İlanlar</h2>
+    <div id="listingContainer"></div>
+
+    <script>
+        async function fetchListings() {
+            const response = await fetch("http://localhost:8000/api/listings");
+            const listings = await response.json();
+            const container = document.getElementById("listingContainer");
+
+            listings.forEach(listing => {
+                const div = document.createElement("div");
+                div.innerHTML = `<h3>${listing.Title}</h3><p>${listing.Description}</p><p>${listing.Price} ₺</p><hr>`;
+                container.appendChild(div);
+            });
+        }
+
+        fetchListings();
+    </script>
+</body>
+</html>

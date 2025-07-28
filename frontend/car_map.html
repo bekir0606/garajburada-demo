@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Yakındaki Tamirciler</title>
+  <style>
+    #map { height: 80vh; width: 100%; border-radius: 12px; margin-top: 20px; }
+    body { font-family: Arial; padding: 20px; background: #f8f9fa; }
+    h2 { color: #333; }
+  </style>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</head>
+<body>
+
+<h2>🗺️ Yakındaki Servis Noktaları</h2>
+<div id="map"></div>
+
+<script>
+const map = L.map('map').setView([37.0662, 37.3833], 13); // Gaziantep merkez
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 18,
+  attribution: '© OpenStreetMap'
+}).addTo(map);
+
+
+fetch('/api/services')
+  .then(res => res.json())
+  .then(data => {
+    data.forEach(s => {
+    fetch(`/api/services/reviews/${s.id}`)
+      .then(res => res.json())
+      .then(reviews => {
+        const average = reviews.length
+          ? (reviews.reduce((a, b) => a + b.rating, 0) / reviews.length).toFixed(1)
+          : "0.0";
+        const comment = reviews.length ? reviews[0].comment : "Henüz yorum yok";
+
+        L.marker([s.lat, s.lon]).addTo(map)
+          .bindPopup(`<b>${s.name}</b><br>Tür: ${s.type}<br>⭐ ${average} / 5<br>💬 ${comment}`);
+      });
+  
+      L.marker([s.lat, s.lon]).addTo(map)
+        .bindPopup(`<b>${s.name}</b><br>${s.type}`);
+    });
+  });
+
+const services = [
+  { name: "Usta Oto Servis", lat: 37.0672, lon: 37.3750 },
+  { name: "Hızlı Tamir", lat: 37.0610, lon: 37.3920 },
+  { name: "Kasko Noktası", lat: 37.0720, lon: 37.3895 },
+  { name: "Oto Check-Up Merkezi", lat: 37.0633, lon: 37.3770 }
+];
+
+services.forEach(s => {
+  L.marker([s.lat, s.lon]).addTo(map)
+    .bindPopup(`<b>${s.name}</b>`)
+    .openPopup();
+});
+</script>
+
+</body>
+</html>

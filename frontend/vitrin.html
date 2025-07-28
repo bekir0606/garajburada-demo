@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Vitrin İlanlar</title>
+  <style>
+    body { font-family: Arial; background: #f4f4f4; padding: 20px; }
+    h2 { text-align: center; }
+    .vitrin { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+    .ilan { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 0 8px rgba(0,0,0,0.1); }
+    .ilan img { width: 100%; height: 180px; object-fit: cover; border-radius: 6px; }
+    .ilan h3 { margin: 10px 0 5px; }
+  </style>
+</head>
+<body>
+
+<h2>⭐ Vitrin İlanlar</h2>
+<div class="vitrin" id="vitrin"></div>
+
+<script>
+fetch("/api/ilanlar/vitrin")
+  .then(res => res.json())
+  .then(data => {
+    const div = document.getElementById("vitrin");
+    data.forEach(ilan => {
+      const el = document.createElement("div");
+      el.className = "ilan";
+      el.innerHTML = `
+        <img src="${ilan.photo || 'https://via.placeholder.com/300x180'}">
+        <h3>${ilan.title}</h3>
+        <p><b>₺${ilan.price}</b> - ${ilan.year}</p>
+      `;
+      div.appendChild(el);
+    });
+  });
+</script>
+
+</body>
+</html>

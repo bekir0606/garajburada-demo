@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h2>Admin Paneli: İstatistik ve Loglar</h2>
+    <canvas id="logChart" width="600" height="300"></canvas>
+    <div id="stats"></div>
+    <hr />
+    <h3>Son Loglar</h3>
+    <ul id="logList"></ul>
+
+    <script>
+        async function loadData() {
+            const statRes = await fetch("http://localhost:8000/api/stats");
+            const stats = await statRes.json();
+            document.getElementById("stats").innerHTML = `
+                <p><b>Toplam İlan:</b> ${stats.total_listings}</p>
+                <p><b>Toplam Üye:</b> ${stats.total_users}</p>
+                <p><b>Vitrin İlan:</b> ${stats.featured_listings}</p>
+                <p><b>Acil İlan:</b> ${stats.urgent_listings}</p>
+            `;
+
+            const labels = stats.logs_per_day.map(item => item[0]);
+            const data = stats.logs_per_day.map(item => item[1]);
+
+            new Chart(document.getElementById("logChart"), {
+                type: "line",
+                data: {
+                    labels,
+                    datasets: [{
+                        label: "Günlük Log Sayısı",
+                        data,
+                        borderWidth: 2
+                    }]
+                }
+            });
+
+            const logRes = await fetch("http://localhost:8000/api/logs");
+            const logs = await logRes.json();
+            const logList = document.getElementById("logList");
+            logs.forEach(log => {
+                const li = document.createElement("li");
+                li.innerText = `[${log.Timestamp}] ${log.User} → ${log.Action}`;
+                logList.appendChild(li);
+            });
+        }
+
+        loadData();
+    </script>
+</body>
+</html>

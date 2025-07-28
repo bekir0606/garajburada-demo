@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Paneli - Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: Arial; margin: 20px; background: #f4f6f8; }
+    h1 { color: #333; }
+    .card { background: #fff; border-radius: 8px; box-shadow: 0 0 8px rgba(0,0,0,0.1); padding: 20px; margin-bottom: 20px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+    canvas { max-width: 100%; }
+  </style>
+</head>
+<body>
+
+<h1>📊 Admin Paneli - Genel Durum</h1>
+<div class="grid">
+  <div class="card"><strong>Kullanıcı Sayısı:</strong> <span id="userCount">Yükleniyor...</span></div>
+  <div class="card"><strong>Toplam İlan:</strong> <span id="listingCount">Yükleniyor...</span></div>
+  <div class="card"><strong>Toplam Görüntüleme:</strong> <span id="viewCount">Yükleniyor...</span></div>
+  <div class="card"><strong>Toplam Mesaj:</strong> <span id="msgCount">Yükleniyor...</span></div>
+</div>
+
+<div class="card">
+  <h3>📈 Günlük İlan Sayısı</h3>
+  <canvas id="dailyChart"></canvas>
+</div>
+
+<div class="card">
+  <h3>🔍 En Çok Aranan Terimler</h3>
+  <canvas id="searchChart"></canvas>
+</div>
+
+<script>
+const token = localStorage.getItem("admin_token"); // localStorage'a token kaydettiğini varsayıyoruz
+
+fetch("/api/admin/stats", {
+  headers: { Authorization: "Bearer " + token }
+})
+.then(res => res.json())
+.then(data => {
+  document.getElementById("userCount").textContent = data.user_count;
+  document.getElementById("listingCount").textContent = data.listing_count;
+  document.getElementById("viewCount").textContent = data.view_count;
+  document.getElementById("msgCount").textContent = data.message_count;
+
+  const searchLabels = data.top_searches.map(item => item.term);
+  const searchData = data.top_searches.map(item => item.count);
+
+  new Chart(document.getElementById("searchChart"), {
+    type: "pie",
+    data: {
+      labels: searchLabels,
+      datasets: [{ label: "Aramalar", data: searchData }]
+    }
+  });
+});
+
+fetch("/api/admin/listings/daily", {
+  headers: { Authorization: "Bearer " + token }
+})
+.then(res => res.json())
+.then(data => {
+  const dates = data.map(item => item.date);
+  const counts = data.map(item => item.count);
+
+  new Chart(document.getElementById("dailyChart"), {
+    type: "bar",
+    data: {
+      labels: dates,
+      datasets: [{
+        label: "İlan Sayısı",
+        data: counts,
+        backgroundColor: "#007bff"
+      }]
+    }
+  });
+});
+</script>
+
+</body>
+</html>

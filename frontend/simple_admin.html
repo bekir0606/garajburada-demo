@@ -1,0 +1,1593 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Garajburada.com</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            font-size: 14px;
+        }
+
+        .header {
+            background: #1e293b;
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            font-size: 24px;
+        }
+
+        .brand {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .btn-primary { background: #3b82f6; }
+        .btn-success { background: #10b981; }
+        .btn-danger { background: #ef4444; }
+        .btn-info { background: #06b6d4; }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .tab {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            font-size: 14px;
+        }
+
+        .tab.active {
+            border-bottom-color: #3b82f6;
+            color: #3b82f6;
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .card h3 {
+            margin-bottom: 1rem;
+            color: #1f2937;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        th, td {
+            padding: 0.5rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        th {
+            background: #f9fafb;
+            font-weight: bold;
+        }
+
+        .status {
+            padding: 0.25rem 0.5rem;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .status-pending { background: #fee2e2; color: #991b1b; }
+        .status-active { background: #d1fae5; color: #065f46; }
+        .status-inactive { background: #fee2e2; color: #991b1b; }
+        .status-rejected { background: #fecaca; color: #dc2626; }
+
+        .role {
+            padding: 0.25rem 0.5rem;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .role-user { background: #e0e7ff; color: #3730a3; }
+        .role-moderator { background: #fef3c7; color: #92400e; }
+        .role-admin { background: #dcfce7; color: #166534; }
+        .role-superadmin { background: #fce7f3; color: #be185d; }
+
+        .btn-small {
+            padding: 0.25rem 0.5rem;
+            font-size: 11px;
+            margin: 0 0.25rem;
+        }
+
+        .alert {
+            padding: 0.75rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            font-size: 12px;
+        }
+
+        .alert-success { background: #d1fae5; color: #065f46; }
+        .alert-error { background: #fee2e2; color: #991b1b; }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <span class="logo-icon">🚗</span>
+            <span class="brand">Garajburada.com - Admin Panel</span>
+        </div>
+        <div class="nav-buttons">
+            <button class="btn btn-primary" onclick="refreshData()">Yenile</button>
+            <button class="btn btn-danger" onclick="logout()">Çıkış</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="alert" class="alert" style="display: none;"></div>
+
+        <!-- Dashboard İstatistikleri -->
+        <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+            <div class="stat-card" style="background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;">
+                <div style="font-size: 2rem; color: #3b82f6; margin-bottom: 0.5rem;">👥</div>
+                <div style="font-size: 1.5rem; font-weight: bold; color: #1f2937;" id="totalUsers">-</div>
+                <div style="font-size: 0.8rem; color: #6b7280;">Toplam Kullanıcı</div>
+            </div>
+            <div class="stat-card" style="background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;">
+                <div style="font-size: 2rem; color: #ef4444; margin-bottom: 0.5rem;">⏳</div>
+                <div style="font-size: 1.5rem; font-weight: bold; color: #1f2937;" id="pendingUsers">-</div>
+                <div style="font-size: 0.8rem; color: #6b7280;">Bekleyen Kullanıcı</div>
+            </div>
+            <div class="stat-card" style="background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;">
+                <div style="font-size: 2rem; color: #10b981; margin-bottom: 0.5rem;">📋</div>
+                <div style="font-size: 1.5rem; font-weight: bold; color: #1f2937;" id="totalListings">-</div>
+                <div style="font-size: 0.8rem; color: #6b7280;">Toplam İlan</div>
+            </div>
+            <div class="stat-card" style="background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;">
+                <div style="font-size: 2rem; color: #f59e0b; margin-bottom: 0.5rem;">💰</div>
+                <div style="font-size: 1.5rem; font-weight: bold; color: #1f2937;" id="totalPayments">-</div>
+                <div style="font-size: 0.8rem; color: #6b7280;">Toplam Ödeme</div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" onclick="showTab('users')">Kullanıcılar</div>
+            <div class="tab" onclick="showTab('listings')">İlanlar</div>
+            <div class="tab" onclick="showTab('expired')">Süresi Biten İlanlar</div>
+            <div class="tab" onclick="showTab('payments')">Ödemeler</div>
+            <div class="tab" onclick="showTab('analytics')">Grafikler</div>
+            <div class="tab" onclick="showTab('bulk')">Toplu İşlemler</div>
+        </div>
+
+        <!-- Kullanıcılar Tab -->
+        <div id="users" class="tab-content active">
+            <div class="card">
+                <h3>Kullanıcı Yönetimi</h3>
+                
+                <!-- Arama ve Filtreleme -->
+                <div style="margin-bottom: 1rem; display: flex; gap: 0.5rem; align-items: center;">
+                    <input type="text" id="userSearch" placeholder="Kullanıcı ara..." style="padding: 0.5rem; border: 1px solid #e5e7eb; border-radius: 5px; flex: 1;">
+                    <select id="roleFilter" style="padding: 0.5rem; border: 1px solid #e5e7eb; border-radius: 5px;">
+                        <option value="">Tüm Roller</option>
+                        <option value="user">Kullanıcı</option>
+                        <option value="moderator">Moderatör</option>
+                        <option value="admin">Admin</option>
+                        <option value="superadmin">Süper Admin</option>
+                    </select>
+                    <select id="statusFilter" style="padding: 0.5rem; border: 1px solid #e5e7eb; border-radius: 5px;">
+                        <option value="">Tüm Durumlar</option>
+                        <option value="active">Aktif</option>
+                        <option value="pending">Bekleyen</option>
+                        <option value="inactive">Pasif</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="filterUsers()">Filtrele</button>
+                    <button class="btn btn-primary" onclick="clearUserFilters()">Temizle</button>
+                </div>
+                
+                <div id="usersLoading" class="loading">Kullanıcılar yükleniyor...</div>
+                <table id="usersTable" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Email</th>
+                            <th>Ad</th>
+                            <th>Rol</th>
+                            <th>Durum</th>
+                            <th>Kayıt Tarihi</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- İlanlar Tab -->
+        <div id="listings" class="tab-content">
+            <div class="card">
+                <h3>İlan Yönetimi</h3>
+                <div id="listingsLoading" class="loading">İlanlar yükleniyor...</div>
+                <table id="listingsTable" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Başlık</th>
+                            <th>Kullanıcı</th>
+                            <th>Fiyat</th>
+                            <th>Durum</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody id="listingsTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Süresi Biten İlanlar Tab -->
+        <div id="expired" class="tab-content">
+            <div class="card">
+                <h3>Süresi Biten İlanlar</h3>
+                
+                <!-- Filtreleme Seçenekleri -->
+                <div style="margin-bottom: 1rem; display: flex; gap: 0.5rem; align-items: center;">
+                    <select id="expiredFilter" style="padding: 0.5rem; border: 1px solid #e5e7eb; border-radius: 5px;">
+                        <option value="all">Tüm Süresi Biten İlanlar</option>
+                        <option value="today">Bugün Süresi Bitenler</option>
+                        <option value="week">Bu Hafta Süresi Bitenler</option>
+                        <option value="month">Bu Ay Süresi Bitenler</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="filterExpiredListings()">Filtrele</button>
+                    <button class="btn btn-success" onclick="extendAllExpired()">Tümünü Uzat</button>
+                    <button class="btn btn-danger" onclick="deleteAllExpired()">Tümünü Sil</button>
+                </div>
+                
+                <div id="expiredLoading" class="loading">Süresi biten ilanlar yükleniyor...</div>
+                <table id="expiredTable" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Başlık</th>
+                            <th>Kullanıcı</th>
+                            <th>Fiyat</th>
+                            <th>Bitiş Tarihi</th>
+                            <th>Kalan Süre</th>
+                            <th>Durum</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody id="expiredTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Ödemeler Tab -->
+        <div id="payments" class="tab-content">
+            <div class="card">
+                <h3>Ödeme Yönetimi</h3>
+                <div id="paymentsLoading" class="loading">Ödemeler yükleniyor...</div>
+                <table id="paymentsTable" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Kullanıcı</th>
+                            <th>Tutar</th>
+                            <th>Açıklama</th>
+                            <th>Durum</th>
+                            <th>Tarih</th>
+                        </tr>
+                    </thead>
+                    <tbody id="paymentsTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Grafikler Tab -->
+        <div id="analytics" class="tab-content">
+            <div class="card">
+                <h3>Analitik ve Raporlar</h3>
+                
+                <!-- Grafik Kontrolleri -->
+                <div style="margin-bottom: 1rem; display: flex; gap: 0.5rem; align-items: center;">
+                    <select id="chartPeriod" style="padding: 0.5rem; border: 1px solid #e5e7eb; border-radius: 5px;">
+                        <option value="7">Son 7 Gün</option>
+                        <option value="30" selected>Son 30 Gün</option>
+                        <option value="90">Son 3 Ay</option>
+                        <option value="365">Son 1 Yıl</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="updateCharts()">Grafikleri Güncelle</button>
+                    <button class="btn btn-success" onclick="exportReport()">Rapor İndir</button>
+                </div>
+
+                <!-- Grafik Grid -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                    <!-- Kullanıcı Artış Grafiği -->
+                    <div style="background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <h4 style="margin-bottom: 1rem; color: #1f2937;">Kullanıcı Artışı</h4>
+                        <canvas id="userGrowthChart" width="400" height="200"></canvas>
+                    </div>
+                    
+                    <!-- İlan İstatistikleri -->
+                    <div style="background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <h4 style="margin-bottom: 1rem; color: #1f2937;">İlan Durumları</h4>
+                        <canvas id="listingStatusChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+
+                <!-- Ödeme Grafiği -->
+                <div style="background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    <h4 style="margin-bottom: 1rem; color: #1f2937;">Aylık Ödeme Gelirleri</h4>
+                    <canvas id="paymentRevenueChart" width="800" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toplu İşlemler Tab -->
+        <div id="bulk" class="tab-content">
+            <div class="card">
+                <h3>Toplu İşlemler</h3>
+                
+                <!-- İşlem Seçimi -->
+                <div style="margin-bottom: 1rem; display: flex; gap: 0.5rem; align-items: center;">
+                    <select id="bulkActionType" style="padding: 0.5rem; border: 1px solid #e5e7eb; border-radius: 5px;">
+                        <option value="">İşlem Türü Seçin</option>
+                        <option value="users">Kullanıcı İşlemleri</option>
+                        <option value="listings">İlan İşlemleri</option>
+                        <option value="payments">Ödeme İşlemleri</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="loadBulkData()">Verileri Yükle</button>
+                    <button class="btn btn-success" onclick="selectAllItems()">Tümünü Seç</button>
+                    <button class="btn btn-primary" onclick="deselectAllItems()">Seçimi Kaldır</button>
+                </div>
+
+                <!-- Toplu İşlem Butonları -->
+                <div id="bulkActionButtons" style="margin-bottom: 1rem; display: none;">
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <button class="btn btn-success" onclick="bulkActivate()">Toplu Aktifleştir</button>
+                        <button class="btn btn-success" onclick="singleActivate()">Tek Aktifleştir</button>
+                        <button class="btn btn-danger" onclick="bulkDeactivate()">Toplu Pasifleştir</button>
+                        <button class="btn btn-primary" onclick="bulkDelete()">Toplu Sil</button>
+                        <button class="btn btn-success" onclick="bulkExport()">Toplu Dışa Aktar</button>
+                        <button class="btn btn-primary" onclick="bulkSendMessage()">Toplu Mesaj Gönder</button>
+                    </div>
+                </div>
+
+                <!-- Seçim Bilgisi -->
+                <div id="selectionInfo" style="margin-bottom: 1rem; padding: 0.5rem; background: #f3f4f6; border-radius: 5px; display: none;">
+                    <span id="selectedCount">0</span> öğe seçildi
+                </div>
+
+                <!-- Toplu İşlem Tablosu -->
+                <div id="bulkTableContainer" style="display: none;">
+                    <table id="bulkTable" style="width: 100%; border-collapse: collapse; font-size: 12px;">
+                        <thead>
+                            <tr>
+                                <th style="width: 30px;">
+                                    <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll()">
+                                </th>
+                                <th>ID</th>
+                                <th>Ad/Email</th>
+                                <th>Durum</th>
+                                <th>Tarih</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bulkTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Demo veriler
+        const demoUsers = [
+            { id: 1, email: 'admin@garajburada.com', name: 'Admin User', role: 'superadmin', status: 'active', createdAt: '2025-07-28' },
+            { id: 2, email: 'moderator@garajburada.com', name: 'Moderator User', role: 'moderator', status: 'active', createdAt: '2025-07-28' },
+            { id: 3, email: 'user@garajburada.com', name: 'Normal User', role: 'user', status: 'active', createdAt: '2025-07-28' },
+            { id: 4, email: 'bekirelbeyoglu27@gmail.com', name: 'bekirelbeyoğlu', role: 'user', status: 'pending', createdAt: '2025-07-28' },
+            { id: 5, email: 'jane.smith@example.com', name: 'Jane Smith', role: 'user', status: 'pending', createdAt: '2025-04-05' }
+        ];
+
+        const demoListings = [
+            { id: 1, title: '2020 BMW 3 Serisi', user: 'user@garajburada.com', price: '850.000 ₺', status: 'active' },
+            { id: 2, title: '2019 Mercedes C Serisi', user: 'user@garajburada.com', price: '920.000 ₺', status: 'pending' },
+            { id: 3, title: '2021 Audi A4', user: 'user@garajburada.com', price: '780.000 ₺', status: 'active' }
+        ];
+
+        const demoPayments = [
+            { id: 1, user: 'user@garajburada.com', amount: '800 ₺', description: 'Premium İlan', status: 'completed', date: '2025-07-28' },
+            { id: 2, user: 'user@garajburada.com', amount: '1200 ₺', description: 'Premium Plus İlan', status: 'pending', date: '2025-07-28' }
+        ];
+
+        // Tab değiştirme
+        function showTab(tabName) {
+            // Tüm tabları gizle
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Seçili tabı göster
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+
+            // Tab içeriğini yükle
+            if (tabName === 'users') {
+                loadUsers();
+            } else if (tabName === 'listings') {
+                loadListings();
+            } else if (tabName === 'expired') {
+                loadExpiredListings();
+            } else if (tabName === 'payments') {
+                loadPayments();
+            }
+        }
+
+        // Kullanıcıları yükle
+        async function loadUsers() {
+            const loading = document.getElementById('usersLoading');
+            const table = document.getElementById('usersTable');
+
+            loading.style.display = 'block';
+            table.style.display = 'none';
+
+            try {
+                const token = localStorage.getItem('adminToken');
+                const response = await fetch('http://localhost:8000/api/admin/users', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const users = await response.json();
+                    displayUsers(users);
+                } else {
+                    // API çalışmıyorsa demo verileri kullan
+                    displayUsers(demoUsers);
+                }
+            } catch (error) {
+                console.log("API hatası, demo veriler kullanılıyor:", error);
+                displayUsers(demoUsers);
+            }
+
+            loading.style.display = 'none';
+            table.style.display = 'table';
+        }
+
+        // Kullanıcıları göster
+        function displayUsers(users) {
+            const tbody = document.getElementById('usersTableBody');
+            tbody.innerHTML = '';
+
+            users.forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${user.id}</td>
+                    <td>${user.email}</td>
+                    <td>${user.name || '-'}</td>
+                    <td><span class="role role-${user.role}">${user.role}</span></td>
+                    <td><span class="status status-${user.status}">${user.status === 'active' ? 'Aktif' : user.status === 'pending' ? 'Bekleyen' : 'Pasif'}</span></td>
+                    <td>${user.createdAt}</td>
+                    <td>
+                        <button class="btn btn-small btn-success" onclick="toggleUserStatus(${user.id})" ${user.status === 'active' ? 'disabled' : ''}>
+                            ${user.status === 'active' ? 'Aktif' : 'Aktifleştir'}
+                        </button>
+                        <button class="btn btn-small btn-primary" onclick="changeUserRole(${user.id})">
+                            Rol Değiştir
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Kullanıcı durumu değiştir
+        async function toggleUserStatus(userId) {
+            try {
+                const token = localStorage.getItem('adminToken');
+                const response = await fetch(`http://localhost:8000/api/admin/users/${userId}/status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ status: 'active' })
+                });
+
+                if (response.ok) {
+                    showAlert('Kullanıcı başarıyla aktifleştirildi!', 'success');
+                    loadUsers();
+                } else {
+                    // Demo modda güncelle
+                    const user = demoUsers.find(u => u.id === userId);
+                    if (user) {
+                        user.status = 'active';
+                        showAlert(`Kullanıcı ${user.name || user.email} aktifleştirildi!`, 'success');
+                        displayUsers(demoUsers);
+                    }
+                }
+            } catch (error) {
+                // Demo modda güncelle
+                const user = demoUsers.find(u => u.id === userId);
+                if (user) {
+                    user.status = 'active';
+                    showAlert(`Kullanıcı ${user.name || user.email} aktifleştirildi!`, 'success');
+                    displayUsers(demoUsers);
+                }
+            }
+        }
+
+        // Kullanıcı rolü değiştir
+        function changeUserRole(userId) {
+            const user = demoUsers.find(u => u.id === userId);
+            if (!user) return;
+
+            const roles = ['user', 'moderator', 'admin', 'superadmin'];
+            const currentIndex = roles.indexOf(user.role);
+            const nextIndex = (currentIndex + 1) % roles.length;
+            const newRole = roles[nextIndex];
+
+            user.role = newRole;
+            showAlert(`Kullanıcı ${user.name || user.email} rolü ${newRole} olarak değiştirildi!`, 'success');
+            displayUsers(demoUsers);
+        }
+
+        // İlanları yükle
+        function loadListings() {
+            const loading = document.getElementById('listingsLoading');
+            const table = document.getElementById('listingsTable');
+
+            loading.style.display = 'block';
+            table.style.display = 'none';
+
+            setTimeout(() => {
+                displayListings(demoListings);
+                loading.style.display = 'none';
+                table.style.display = 'table';
+            }, 500);
+        }
+
+        // İlanları göster
+        function displayListings(listings) {
+            const tbody = document.getElementById('listingsTableBody');
+            tbody.innerHTML = '';
+
+            listings.forEach(listing => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${listing.id}</td>
+                    <td>${listing.title}</td>
+                    <td>${listing.user}</td>
+                    <td>${listing.price}</td>
+                    <td><span class="status status-${listing.status}">${listing.status === 'active' ? 'Aktif' : listing.status === 'rejected' ? 'Reddedildi' : 'Bekliyor'}</span></td>
+                    <td>
+                        <button class="btn btn-small btn-info" onclick="viewListing(${listing.id})" style="margin-right: 5px;">
+                            Görüntüle
+                        </button>
+                        <button class="btn btn-small btn-success" onclick="approveListing(${listing.id})" ${listing.status === 'active' ? 'disabled' : ''}>
+                            ${listing.status === 'active' ? 'Onaylandı' : 'Onayla'}
+                        </button>
+                        <button class="btn btn-small btn-danger" onclick="rejectListing(${listing.id})" ${listing.status === 'rejected' ? 'disabled' : ''}>
+                            ${listing.status === 'rejected' ? 'Reddedildi' : 'Reddet'}
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // İlan görüntüle
+        function viewListing(listingId) {
+            const listing = demoListings.find(l => l.id === listingId);
+            if (listing) {
+                const statusText = listing.status === 'active' ? 'Aktif' : 
+                                  listing.status === 'rejected' ? 'Reddedildi' : 'Bekliyor';
+                const details = `
+                    <strong>İlan Detayları:</strong><br>
+                    <strong>ID:</strong> ${listing.id}<br>
+                    <strong>Başlık:</strong> ${listing.title}<br>
+                    <strong>Kullanıcı:</strong> ${listing.user}<br>
+                    <strong>Fiyat:</strong> ${listing.price}<br>
+                    <strong>Durum:</strong> ${statusText}<br>
+                    <strong>Oluşturulma:</strong> ${listing.created_at || '2025-07-28'}
+                `;
+                
+                // Modal veya alert ile göster
+                if (confirm(details + '\n\nBu ilanı detaylı görüntülemek istiyor musunuz?')) {
+                    // Gerçek uygulamada yeni sayfa açılabilir
+                    window.open(`/listing/${listing.id}`, '_blank');
+                }
+            }
+        }
+
+        // İlan onayla
+        function approveListing(listingId) {
+            const listing = demoListings.find(l => l.id === listingId);
+            if (listing) {
+                listing.status = 'active';
+                showAlert(`İlan ${listing.title} onaylandı!`, 'success');
+                displayListings(demoListings);
+            }
+        }
+
+        // İlan reddet
+        function rejectListing(listingId) {
+            const listing = demoListings.find(l => l.id === listingId);
+            if (listing) {
+                if (confirm(`İlan "${listing.title}" reddedilecek. Bu işlem geri alınamaz. Devam etmek istiyor musunuz?`)) {
+                    listing.status = 'rejected';
+                    showAlert(`İlan ${listing.title} reddedildi!`, 'error');
+                    displayListings(demoListings);
+                }
+            }
+        }
+
+        // Ödemeleri yükle
+        function loadPayments() {
+            const loading = document.getElementById('paymentsLoading');
+            const table = document.getElementById('paymentsTable');
+
+            loading.style.display = 'block';
+            table.style.display = 'none';
+
+            setTimeout(() => {
+                displayPayments(demoPayments);
+                loading.style.display = 'none';
+                table.style.display = 'table';
+            }, 500);
+        }
+
+        // Ödemeleri göster
+        function displayPayments(payments) {
+            const tbody = document.getElementById('paymentsTableBody');
+            tbody.innerHTML = '';
+
+            payments.forEach(payment => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${payment.id}</td>
+                    <td>${payment.user}</td>
+                    <td>${payment.amount}</td>
+                    <td>${payment.description}</td>
+                    <td><span class="status status-${payment.status}">${payment.status === 'completed' ? 'Tamamlandı' : 'Bekliyor'}</span></td>
+                    <td>${payment.date}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Alert göster
+        function showAlert(message, type) {
+            const alert = document.getElementById('alert');
+            alert.textContent = message;
+            alert.className = `alert alert-${type}`;
+            alert.style.display = 'block';
+
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 3000);
+        }
+
+        // Kullanıcı filtreleme
+        function filterUsers() {
+            const searchTerm = document.getElementById('userSearch').value.toLowerCase();
+            const roleFilter = document.getElementById('roleFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+            
+            const filteredUsers = demoUsers.filter(user => {
+                const matchesSearch = user.name?.toLowerCase().includes(searchTerm) || 
+                                    user.email.toLowerCase().includes(searchTerm);
+                const matchesRole = !roleFilter || user.role === roleFilter;
+                const matchesStatus = !statusFilter || user.status === statusFilter;
+                
+                return matchesSearch && matchesRole && matchesStatus;
+            });
+            
+            displayUsers(filteredUsers);
+            showAlert(`${filteredUsers.length} kullanıcı bulundu`, 'success');
+        }
+
+        // Filtreleri temizle
+        function clearUserFilters() {
+            document.getElementById('userSearch').value = '';
+            document.getElementById('roleFilter').value = '';
+            document.getElementById('statusFilter').value = '';
+            displayUsers(demoUsers);
+            showAlert('Filtreler temizlendi', 'success');
+        }
+
+        // Verileri yenile
+        function refreshData() {
+            showAlert('Veriler yenileniyor...', 'success');
+            loadUsers();
+            updateStats();
+        }
+
+        // Çıkış yap
+        function logout() {
+            localStorage.removeItem('adminToken');
+            localStorage.removeItem('userEmail');
+            localStorage.removeItem('userRole');
+            window.location.href = 'login.html';
+        }
+
+        // İstatistikleri güncelle
+        function updateStats() {
+            // Kullanıcı istatistikleri
+            document.getElementById('totalUsers').textContent = demoUsers.length;
+            document.getElementById('pendingUsers').textContent = demoUsers.filter(u => u.status === 'pending').length;
+            
+            // İlan istatistikleri
+            document.getElementById('totalListings').textContent = demoListings.length;
+            
+            // Ödeme istatistikleri
+            document.getElementById('totalPayments').textContent = demoPayments.length;
+        }
+
+        // Grafik değişkenleri
+        let userGrowthChart, listingStatusChart, paymentRevenueChart;
+
+        // Grafikleri güncelle
+        function updateCharts() {
+            const period = document.getElementById('chartPeriod').value;
+            initUserGrowthChart(period);
+            initListingStatusChart();
+            initPaymentRevenueChart();
+        }
+
+        // Kullanıcı artış grafiği
+        function initUserGrowthChart(period = 30) {
+            const ctx = document.getElementById('userGrowthChart').getContext('2d');
+            
+            if (userGrowthChart) {
+                userGrowthChart.destroy();
+            }
+
+            // Demo veri - gerçek uygulamada API'den gelecek
+            const labels = [];
+            const data = [];
+            const today = new Date();
+            
+            for (let i = period - 1; i >= 0; i--) {
+                const date = new Date(today);
+                date.setDate(date.getDate() - i);
+                labels.push(date.toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit' }));
+                data.push(Math.floor(Math.random() * 10) + 1); // Demo veri
+            }
+
+            userGrowthChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Yeni Kullanıcılar',
+                        data: data,
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // İlan durumları grafiği
+        function initListingStatusChart() {
+            const ctx = document.getElementById('listingStatusChart').getContext('2d');
+            
+            if (listingStatusChart) {
+                listingStatusChart.destroy();
+            }
+
+            const activeListings = demoListings.filter(l => l.status === 'active').length;
+            const pendingListings = demoListings.filter(l => l.status === 'pending').length;
+
+            listingStatusChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Aktif İlanlar', 'Bekleyen İlanlar'],
+                    datasets: [{
+                        data: [activeListings, pendingListings],
+                        backgroundColor: ['#10b981', '#f59e0b'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Ödeme gelirleri grafiği
+        function initPaymentRevenueChart() {
+            const ctx = document.getElementById('paymentRevenueChart').getContext('2d');
+            
+            if (paymentRevenueChart) {
+                paymentRevenueChart.destroy();
+            }
+
+            // Demo veri - gerçek uygulamada API'den gelecek
+            const months = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran'];
+            const revenue = [12000, 15000, 18000, 22000, 25000, 28000];
+
+            paymentRevenueChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: months,
+                    datasets: [{
+                        label: 'Aylık Gelir (₺)',
+                        data: revenue,
+                        backgroundColor: '#10b981',
+                        borderColor: '#059669',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return value.toLocaleString('tr-TR') + ' ₺';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Rapor indir
+        function exportReport() {
+            const reportData = {
+                totalUsers: demoUsers.length,
+                pendingUsers: demoUsers.filter(u => u.status === 'pending').length,
+                totalListings: demoListings.length,
+                totalPayments: demoPayments.length,
+                generatedAt: new Date().toLocaleString('tr-TR')
+            };
+
+            const reportText = `
+GARAJBURADA.COM - ADMIN RAPORU
+================================
+Toplam Kullanıcı: ${reportData.totalUsers}
+Bekleyen Kullanıcı: ${reportData.pendingUsers}
+Toplam İlan: ${reportData.totalListings}
+Toplam Ödeme: ${reportData.totalPayments}
+Rapor Tarihi: ${reportData.generatedAt}
+            `;
+
+            const blob = new Blob([reportText], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `garajburada-rapor-${new Date().toISOString().split('T')[0]}.txt`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+
+            showAlert('Rapor başarıyla indirildi!', 'success');
+        }
+
+        // Toplu işlem değişkenleri
+        let bulkData = [];
+        let selectedItems = new Set();
+
+        // Toplu işlem verilerini yükle
+        function loadBulkData() {
+            const actionType = document.getElementById('bulkActionType').value;
+            if (!actionType) {
+                showAlert('Lütfen işlem türü seçin!', 'error');
+                return;
+            }
+
+            const container = document.getElementById('bulkTableContainer');
+            const buttons = document.getElementById('bulkActionButtons');
+            
+            container.style.display = 'block';
+            buttons.style.display = 'block';
+
+            switch (actionType) {
+                case 'users':
+                    bulkData = [...demoUsers];
+                    displayBulkUsers();
+                    break;
+                case 'listings':
+                    bulkData = [...demoListings];
+                    displayBulkListings();
+                    break;
+                case 'payments':
+                    bulkData = [...demoPayments];
+                    displayBulkPayments();
+                    break;
+            }
+
+            showAlert(`${bulkData.length} öğe yüklendi`, 'success');
+        }
+
+        // Toplu kullanıcıları göster
+        function displayBulkUsers() {
+            const tbody = document.getElementById('bulkTableBody');
+            tbody.innerHTML = '';
+
+            bulkData.forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><input type="checkbox" class="item-checkbox" value="${user.id}" onchange="toggleItemSelection(${user.id})"></td>
+                    <td>${user.id}</td>
+                    <td>${user.name || user.email}</td>
+                    <td><span class="status status-${user.status}">${user.status === 'active' ? 'Aktif' : user.status === 'pending' ? 'Bekleyen' : 'Pasif'}</span></td>
+                    <td>${user.createdAt}</td>
+                    <td>
+                        <button class="btn btn-small btn-success" onclick="toggleUserStatus(${user.id})">
+                            ${user.status === 'active' ? 'Pasifleştir' : 'Aktifleştir'}
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Toplu ilanları göster
+        function displayBulkListings() {
+            const tbody = document.getElementById('bulkTableBody');
+            tbody.innerHTML = '';
+
+            bulkData.forEach(listing => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><input type="checkbox" class="item-checkbox" value="${listing.id}" onchange="toggleItemSelection(${listing.id})"></td>
+                    <td>${listing.id}</td>
+                    <td>${listing.title}</td>
+                    <td><span class="status status-${listing.status}">${listing.status === 'active' ? 'Aktif' : listing.status === 'rejected' ? 'Reddedildi' : 'Bekliyor'}</span></td>
+                    <td>2025-07-28</td>
+                    <td>
+                        <button class="btn btn-small btn-info" onclick="viewListing(${listing.id})" style="margin-right: 5px;">
+                            Görüntüle
+                        </button>
+                        <button class="btn btn-small btn-success" onclick="approveListing(${listing.id})">
+                            ${listing.status === 'active' ? 'Onaylandı' : 'Onayla'}
+                        </button>
+                        <button class="btn btn-small btn-danger" onclick="rejectListing(${listing.id})" ${listing.status === 'rejected' ? 'disabled' : ''}>
+                            ${listing.status === 'rejected' ? 'Reddedildi' : 'Reddet'}
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Toplu ödemeleri göster
+        function displayBulkPayments() {
+            const tbody = document.getElementById('bulkTableBody');
+            tbody.innerHTML = '';
+
+            bulkData.forEach(payment => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><input type="checkbox" class="item-checkbox" value="${payment.id}" onchange="toggleItemSelection(${payment.id})"></td>
+                    <td>${payment.id}</td>
+                    <td>${payment.user}</td>
+                    <td><span class="status status-${payment.status}">${payment.status === 'completed' ? 'Tamamlandı' : 'Bekliyor'}</span></td>
+                    <td>${payment.date}</td>
+                    <td>
+                        <button class="btn btn-small btn-primary">Detay</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Öğe seçimini değiştir
+        function toggleItemSelection(id) {
+            if (selectedItems.has(id)) {
+                selectedItems.delete(id);
+            } else {
+                selectedItems.add(id);
+            }
+            updateSelectionInfo();
+        }
+
+        // Tümünü seç/kaldır
+        function toggleSelectAll() {
+            const checkboxes = document.querySelectorAll('.item-checkbox');
+            const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAllCheckbox.checked;
+                const id = parseInt(checkbox.value);
+                if (selectAllCheckbox.checked) {
+                    selectedItems.add(id);
+                } else {
+                    selectedItems.delete(id);
+                }
+            });
+            
+            updateSelectionInfo();
+        }
+
+        // Tümünü seç
+        function selectAllItems() {
+            const checkboxes = document.querySelectorAll('.item-checkbox');
+            const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = true;
+                selectedItems.add(parseInt(checkbox.value));
+            });
+            selectAllCheckbox.checked = true;
+            updateSelectionInfo();
+        }
+
+        // Seçimi kaldır
+        function deselectAllItems() {
+            const checkboxes = document.querySelectorAll('.item-checkbox');
+            const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            selectAllCheckbox.checked = false;
+            selectedItems.clear();
+            updateSelectionInfo();
+        }
+
+        // Seçim bilgisini güncelle
+        function updateSelectionInfo() {
+            const info = document.getElementById('selectionInfo');
+            const count = document.getElementById('selectedCount');
+            
+            count.textContent = selectedItems.size;
+            
+            if (selectedItems.size > 0) {
+                info.style.display = 'block';
+            } else {
+                info.style.display = 'none';
+            }
+        }
+
+        // Toplu aktifleştir
+        function bulkActivate() {
+            if (selectedItems.size === 0) {
+                showAlert('Lütfen en az bir öğe seçin!', 'error');
+                return;
+            }
+
+            const actionType = document.getElementById('bulkActionType').value;
+            let updatedCount = 0;
+
+            selectedItems.forEach(id => {
+                if (actionType === 'users') {
+                    const user = demoUsers.find(u => u.id === id);
+                    if (user && user.status !== 'active') {
+                        user.status = 'active';
+                        updatedCount++;
+                    }
+                } else if (actionType === 'listings') {
+                    const listing = demoListings.find(l => l.id === id);
+                    if (listing && listing.status !== 'active') {
+                        listing.status = 'active';
+                        updatedCount++;
+                    }
+                }
+            });
+
+            showAlert(`${updatedCount} öğe aktifleştirildi!`, 'success');
+            loadBulkData(); // Tabloyu yenile
+            selectedItems.clear();
+            updateSelectionInfo();
+        }
+
+        // Tek aktifleştir
+        function singleActivate() {
+            if (selectedItems.size !== 1) {
+                showAlert('Lütfen sadece bir öğe seçin!', 'error');
+                return;
+            }
+
+            const actionType = document.getElementById('bulkActionType').value;
+            const selectedId = Array.from(selectedItems)[0];
+
+            if (actionType === 'users') {
+                const user = demoUsers.find(u => u.id === selectedId);
+                if (user && user.status !== 'active') {
+                    user.status = 'active';
+                    showAlert(`Kullanıcı ${user.name || user.email} aktifleştirildi!`, 'success');
+                } else {
+                    showAlert('Bu kullanıcı zaten aktif!', 'info');
+                }
+            } else if (actionType === 'listings') {
+                const listing = demoListings.find(l => l.id === selectedId);
+                if (listing && listing.status !== 'active') {
+                    listing.status = 'active';
+                    showAlert(`İlan ${listing.title} onaylandı!`, 'success');
+                } else {
+                    showAlert('Bu ilan zaten onaylı!', 'info');
+                }
+            }
+
+            loadBulkData(); // Tabloyu yenile
+            selectedItems.clear();
+            updateSelectionInfo();
+        }
+
+        // Toplu pasifleştir
+        function bulkDeactivate() {
+            if (selectedItems.size === 0) {
+                showAlert('Lütfen en az bir öğe seçin!', 'error');
+                return;
+            }
+
+            const actionType = document.getElementById('bulkActionType').value;
+            let updatedCount = 0;
+
+            selectedItems.forEach(id => {
+                if (actionType === 'users') {
+                    const user = demoUsers.find(u => u.id === id);
+                    if (user && user.status === 'active') {
+                        user.status = 'inactive';
+                        updatedCount++;
+                    }
+                } else if (actionType === 'listings') {
+                    const listing = demoListings.find(l => l.id === id);
+                    if (listing && listing.status === 'active') {
+                        listing.status = 'pending';
+                        updatedCount++;
+                    }
+                }
+            });
+
+            showAlert(`${updatedCount} öğe pasifleştirildi!`, 'success');
+            loadBulkData(); // Tabloyu yenile
+            selectedItems.clear();
+            updateSelectionInfo();
+        }
+
+        // Toplu sil
+        function bulkDelete() {
+            if (selectedItems.size === 0) {
+                showAlert('Lütfen en az bir öğe seçin!', 'error');
+                return;
+            }
+
+            if (!confirm(`${selectedItems.size} öğeyi silmek istediğinizden emin misiniz?`)) {
+                return;
+            }
+
+            const actionType = document.getElementById('bulkActionType').value;
+            let deletedCount = 0;
+
+            selectedItems.forEach(id => {
+                if (actionType === 'users') {
+                    const index = demoUsers.findIndex(u => u.id === id);
+                    if (index !== -1) {
+                        demoUsers.splice(index, 1);
+                        deletedCount++;
+                    }
+                } else if (actionType === 'listings') {
+                    const index = demoListings.findIndex(l => l.id === id);
+                    if (index !== -1) {
+                        demoListings.splice(index, 1);
+                        deletedCount++;
+                    }
+                } else if (actionType === 'payments') {
+                    const index = demoPayments.findIndex(p => p.id === id);
+                    if (index !== -1) {
+                        demoPayments.splice(index, 1);
+                        deletedCount++;
+                    }
+                }
+            });
+
+            showAlert(`${deletedCount} öğe silindi!`, 'success');
+            loadBulkData(); // Tabloyu yenile
+            selectedItems.clear();
+            updateSelectionInfo();
+        }
+
+        // Toplu dışa aktar
+        function bulkExport() {
+            if (selectedItems.size === 0) {
+                showAlert('Lütfen en az bir öğe seçin!', 'error');
+                return;
+            }
+
+            const actionType = document.getElementById('bulkActionType').value;
+            const selectedData = [];
+
+            selectedItems.forEach(id => {
+                if (actionType === 'users') {
+                    const user = demoUsers.find(u => u.id === id);
+                    if (user) selectedData.push(user);
+                } else if (actionType === 'listings') {
+                    const listing = demoListings.find(l => l.id === id);
+                    if (listing) selectedData.push(listing);
+                } else if (actionType === 'payments') {
+                    const payment = demoPayments.find(p => p.id === id);
+                    if (payment) selectedData.push(payment);
+                }
+            });
+
+            const dataStr = JSON.stringify(selectedData, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `garajburada-${actionType}-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+
+            showAlert(`${selectedData.length} öğe dışa aktarıldı!`, 'success');
+        }
+
+        // Toplu mesaj gönder
+        function bulkSendMessage() {
+            if (selectedItems.size === 0) {
+                showAlert('Lütfen en az bir öğe seçin!', 'error');
+                return;
+            }
+
+            const message = prompt('Göndermek istediğiniz mesajı yazın:');
+            if (!message) return;
+
+            const actionType = document.getElementById('bulkActionType').value;
+            let sentCount = 0;
+
+            selectedItems.forEach(id => {
+                if (actionType === 'users') {
+                    const user = demoUsers.find(u => u.id === id);
+                    if (user) sentCount++;
+                }
+            });
+
+            showAlert(`${sentCount} kullanıcıya mesaj gönderildi!`, 'success');
+        }
+
+        // Süresi biten ilanları yükle
+        async function loadExpiredListings() {
+            document.getElementById('expiredLoading').style.display = 'block';
+            document.getElementById('expiredTable').style.display = 'none';
+            
+            try {
+                const token = localStorage.getItem('adminToken');
+                const response = await fetch('http://localhost:8000/api/admin/expired-listings', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    displayExpiredListings(data.listings);
+                } else {
+                    // API çalışmıyorsa demo verileri kullan
+                    const expiredListings = [
+                        {
+                            id: 1,
+                            title: "2018 BMW 320i",
+                            user_email: "ahmet@email.com",
+                            price: "₺850,000",
+                            expires_at: "2025-01-20",
+                            status: "expired",
+                            days_left: -5
+                        },
+                        {
+                            id: 2,
+                            title: "2019 Mercedes C200",
+                            user_email: "mehmet@email.com",
+                            price: "₺1,200,000",
+                            expires_at: "2025-01-22",
+                            status: "expired",
+                            days_left: -3
+                        },
+                        {
+                            id: 3,
+                            title: "2020 Audi A4",
+                            user_email: "ayse@email.com",
+                            price: "₺950,000",
+                            expires_at: "2025-01-25",
+                            status: "expired",
+                            days_left: 0
+                        },
+                        {
+                            id: 4,
+                            title: "2017 Volkswagen Golf",
+                            user_email: "fatma@email.com",
+                            price: "₺450,000",
+                            expires_at: "2025-01-28",
+                            status: "expired",
+                            days_left: 3
+                        }
+                    ];
+                    displayExpiredListings(expiredListings);
+                }
+            } catch (error) {
+                console.log("API hatası, demo veriler kullanılıyor:", error);
+                // Demo veriler
+                const expiredListings = [
+                    {
+                        id: 1,
+                        title: "2018 BMW 320i",
+                        user_email: "ahmet@email.com",
+                        price: "₺850,000",
+                        expires_at: "2025-01-20",
+                        status: "expired",
+                        days_left: -5
+                    },
+                    {
+                        id: 2,
+                        title: "2019 Mercedes C200",
+                        user_email: "mehmet@email.com",
+                        price: "₺1,200,000",
+                        expires_at: "2025-01-22",
+                        status: "expired",
+                        days_left: -3
+                    },
+                    {
+                        id: 3,
+                        title: "2020 Audi A4",
+                        user_email: "ayse@email.com",
+                        price: "₺950,000",
+                        expires_at: "2025-01-25",
+                        status: "expired",
+                        days_left: 0
+                    },
+                    {
+                        id: 4,
+                        title: "2017 Volkswagen Golf",
+                        user_email: "fatma@email.com",
+                        price: "₺450,000",
+                        expires_at: "2025-01-28",
+                        status: "expired",
+                        days_left: 3
+                    }
+                ];
+                displayExpiredListings(expiredListings);
+            }
+        }
+
+        // Süresi biten ilanları göster
+        function displayExpiredListings(listings) {
+            const tbody = document.getElementById('expiredTableBody');
+            tbody.innerHTML = '';
+            
+            listings.forEach(listing => {
+                const daysLeftText = listing.days_left < 0 ? 
+                    `${Math.abs(listing.days_left)} gün önce bitti` : 
+                    listing.days_left === 0 ? 'Bugün bitiyor' : 
+                    `${listing.days_left} gün kaldı`;
+                
+                const daysLeftClass = listing.days_left < 0 ? 'status-expired' : 
+                                    listing.days_left === 0 ? 'status-pending' : 
+                                    'status-active';
+                
+                const row = `
+                    <tr>
+                        <td>${listing.id}</td>
+                        <td>${listing.title}</td>
+                        <td>${listing.user_email}</td>
+                        <td>${listing.price}</td>
+                        <td>${listing.expires_at}</td>
+                        <td><span class="status ${daysLeftClass}">${daysLeftText}</span></td>
+                        <td><span class="status status-expired">Süresi Bitti</span></td>
+                        <td>
+                            <button class="btn btn-small btn-info" onclick="viewExpiredListing(${listing.id})" style="margin-right: 5px;">
+                                Görüntüle
+                            </button>
+                            <button class="btn btn-small btn-success" onclick="extendListing(${listing.id})" style="margin-right: 5px;">
+                                Uzat
+                            </button>
+                            <button class="btn btn-small btn-danger" onclick="deleteExpiredListing(${listing.id})">
+                                Sil
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+            
+            document.getElementById('expiredLoading').style.display = 'none';
+            document.getElementById('expiredTable').style.display = 'table';
+        }
+
+        // Süresi biten ilanları filtrele
+        function filterExpiredListings() {
+            const filter = document.getElementById('expiredFilter').value;
+            loadExpiredListings(); // Şimdilik tümünü göster, gerçek uygulamada filtreleme yapılacak
+            showAlert(`${filter} filtresi uygulandı!`, 'success');
+        }
+
+        // İlan süresini uzat
+        async function extendListing(listingId) {
+            const days = prompt('Kaç gün uzatmak istiyorsunuz?', '30');
+            if (days && !isNaN(days)) {
+                try {
+                    const token = localStorage.getItem('adminToken');
+                    const response = await fetch(`http://localhost:8000/api/admin/listings/${listingId}/extend?days=${days}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (response.ok) {
+                        const result = await response.json();
+                        showAlert(result.message, 'success');
+                        loadExpiredListings(); // Tabloyu yenile
+                    } else {
+                        showAlert('İlan süresi uzatılamadı!', 'error');
+                    }
+                } catch (error) {
+                    console.log("API hatası:", error);
+                    showAlert(`İlan ${listingId} süresi ${days} gün uzatıldı! (Demo)`, 'success');
+                    loadExpiredListings(); // Tabloyu yenile
+                }
+            }
+        }
+
+        // Süresi biten ilanı sil
+        function deleteExpiredListing(listingId) {
+            if (confirm(`İlan ${listingId} silinecek. Bu işlem geri alınamaz. Devam etmek istiyor musunuz?`)) {
+                showAlert(`İlan ${listingId} silindi!`, 'success');
+                loadExpiredListings(); // Tabloyu yenile
+            }
+        }
+
+        // Tüm süresi biten ilanları uzat
+        async function extendAllExpired() {
+            const days = prompt('Tüm süresi biten ilanları kaç gün uzatmak istiyorsunuz?', '30');
+            if (days && !isNaN(days)) {
+                try {
+                    const token = localStorage.getItem('adminToken');
+                    const response = await fetch(`http://localhost:8000/api/admin/listings/extend-all-expired?days=${days}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (response.ok) {
+                        const result = await response.json();
+                        showAlert(result.message, 'success');
+                        loadExpiredListings(); // Tabloyu yenile
+                    } else {
+                        showAlert('İlanlar uzatılamadı!', 'error');
+                    }
+                } catch (error) {
+                    console.log("API hatası:", error);
+                    showAlert(`Tüm süresi biten ilanlar ${days} gün uzatıldı! (Demo)`, 'success');
+                    loadExpiredListings(); // Tabloyu yenile
+                }
+            }
+        }
+
+        // Tüm süresi biten ilanları sil
+        function deleteAllExpired() {
+            if (confirm('Tüm süresi biten ilanlar silinecek. Bu işlem geri alınamaz. Devam etmek istiyor musunuz?')) {
+                showAlert('Tüm süresi biten ilanlar silindi!', 'success');
+                loadExpiredListings(); // Tabloyu yenile
+            }
+        }
+
+        // Süresi biten ilanı görüntüle
+        function viewExpiredListing(listingId) {
+            const listing = demoListings.find(l => l.id === listingId);
+            if (listing) {
+                const details = `
+                    <strong>İlan Detayları:</strong><br>
+                    <strong>ID:</strong> ${listing.id}<br>
+                    <strong>Başlık:</strong> ${listing.title}<br>
+                    <strong>Kullanıcı:</strong> ${listing.user}<br>
+                    <strong>Fiyat:</strong> ${listing.price}<br>
+                    <strong>Durum:</strong> Süresi Bitti<br>
+                    <strong>Oluşturulma:</strong> ${listing.created_at || '2025-01-15'}
+                `;
+
+                if (confirm(details + '\n\nBu ilanı detaylı görüntülemek istiyor musunuz?')) {
+                    window.open(`/listing/${listing.id}`, '_blank');
+                }
+            }
+        }
+
+        // Sayfa yüklendiğinde kullanıcıları yükle
+        window.onload = function() {
+            loadUsers();
+            updateStats();
+            updateCharts(); // Grafikleri yükle
+        };
+    </script>
+</body>
+</html> 

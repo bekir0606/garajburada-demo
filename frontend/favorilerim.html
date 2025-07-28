@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Favori İlanlarım</title>
+  <style>
+    body { font-family: Arial; background: #f5f5f5; padding: 20px; }
+    h2 { text-align: center; }
+    .ilanlar { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+    .ilan { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 0 6px rgba(0,0,0,0.1); }
+    .ilan img { width: 100%; height: 180px; object-fit: cover; border-radius: 4px; }
+    .ilan h3 { margin: 10px 0 5px; }
+    .ilan p { margin: 4px 0; color: #555; }
+  </style>
+</head>
+<body>
+
+<h2>❤️ Favori İlanlarım</h2>
+<div class="ilanlar" id="ilanlar"></div>
+
+<script>
+const favs = JSON.parse(localStorage.getItem("favoriler") || "[]");
+
+function listeleFavoriler() {
+  if (!favs.length) {
+    document.getElementById("ilanlar").innerHTML = "<p style='text-align:center;'>Favori ilanınız bulunmuyor.</p>";
+    return;
+  }
+
+  favs.forEach(id => {
+    fetch("/api/ilan/" + id)
+      .then(res => res.json())
+      .then(ilan => {
+        const div = document.createElement("div");
+        div.className = "ilan";
+        div.innerHTML = `
+          <img src="${ilan.photo || 'https://via.placeholder.com/300x180?text=Foto+yok'}" alt="İlan">
+          <h3>${ilan.title}</h3>
+          <p><b>Marka:</b> ${ilan.brand}</p>
+          <p><b>Model:</b> ${ilan.model}</p>
+          <p><b>Fiyat:</b> ₺${ilan.price}</p>
+          <p><b>Yıl:</b> ${ilan.year}</p>
+        `;
+        document.getElementById("ilanlar").appendChild(div);
+      });
+  });
+}
+
+listeleFavoriler();
+</script>
+
+</body>
+</html>

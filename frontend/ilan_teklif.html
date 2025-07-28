@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>İlan Teklif Ver</title>
+  <style>
+    body { font-family: Arial; background: #f2f2f2; padding: 20px; }
+    .box { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 6px rgba(0,0,0,0.1); }
+    h2 { text-align: center; }
+    #teklifler { margin-top: 15px; padding: 10px; background: #fafafa; border: 1px solid #ccc; border-radius: 8px; height: 250px; overflow-y: auto; }
+    .tklf { padding: 8px; margin-bottom: 6px; background: #eee; border-radius: 6px; }
+    input { width: 100%; padding: 10px; margin-top: 12px; border-radius: 6px; border: 1px solid #ccc; }
+    button { padding: 10px; margin-top: 10px; background: #007bff; color: white; border: none; border-radius: 6px; width: 100%; }
+    button:hover { background: #0056b3; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h2>💰 Teklif Ver</h2>
+  <div id="teklifler"></div>
+  <input id="teklifInput" type="number" placeholder="Teklifinizi ₺ cinsinden yazın...">
+  <button onclick="teklifGonder()">Teklif Gönder</button>
+</div>
+
+<script>
+const token = localStorage.getItem("user_token") || prompt("JWT token girin:");
+const ilanId = new URLSearchParams(window.location.search).get("id");
+
+function teklifleriListele() {
+  fetch(`/api/ilan/${ilanId}/teklifler`, {
+    headers: { "Authorization": "Bearer " + token }
+  })
+  .then(res => res.json())
+  .then(data => {
+    const container = document.getElementById("teklifler");
+    container.innerHTML = "";
+    if (data.length === 0) {
+      container.innerHTML = "<p>Henüz teklif yok.</p>";
+    } else {
+      data.forEach(t => {
+        const div = document.createElement("div");
+        div.className = "tklf";
+        div.innerHTML = `<b>${t.user}</b>: ₺${t.amount}`;
+        container.appendChild(div);
+      });
+    }
+  });
+}
+
+function teklifGonder() {
+  const value = document.getElementById("teklifInput").value;
+  if (!value) return;
+  fetch(`/api/ilan/${ilanId}/teklif`, {
+    method: "POST",
+    headers: {
+      "Authorization": "Bearer " + token,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ amount: parseFloat(value) })
+  })
+  .then(res => res.json())
+  .then(() => {
+    document.getElementById("teklifInput").value = "";
+    teklifleriListele();
+  });
+}
+
+teklifleriListele();
+</script>
+
+</body>
+</html>

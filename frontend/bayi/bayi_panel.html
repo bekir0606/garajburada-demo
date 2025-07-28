@@ -1,0 +1,37 @@
+
+<!-- bayi_panel.html -->
+<h2>🏢 Kurumsal Bayi Paneli</h2>
+<form id="loginForm">
+  <input placeholder="Bayi Kodu" name="code" />
+  <input type="password" placeholder="Şifre" name="password" />
+  <button>Giriş Yap</button>
+</form>
+
+<div id="bayiIlanPanel" style="display:none">
+  <h3>İlanlarım</h3>
+  <ul id="ilanList"></ul>
+</div>
+
+<script>
+document.getElementById("loginForm").onsubmit = async (e) => {
+  e.preventDefault();
+  const form = new FormData(e.target);
+  const res = await fetch("/api/bayi/login", { method: "POST", body: form });
+  if (res.ok) {
+    document.getElementById("loginForm").style.display = "none";
+    document.getElementById("bayiIlanPanel").style.display = "block";
+    loadIlanlar();
+  }
+};
+
+async function loadIlanlar() {
+  const res = await fetch("/api/bayi/ilanlar");
+  const ilanlar = await res.json();
+  const ul = document.getElementById("ilanList");
+  ilanlar.forEach(i => {
+    const li = document.createElement("li");
+    li.textContent = `${i.baslik} (${i.kategori})`;
+    ul.appendChild(li);
+  });
+}
+</script>

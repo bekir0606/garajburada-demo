@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Moderatör Paneli</title>
+  <style>
+    body { font-family: Arial; margin: 20px; background: #f4f6f8; }
+    h1 { color: #222; }
+    .listing { background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 0 8px rgba(0,0,0,0.1); margin-bottom: 10px; }
+    button { margin-right: 10px; padding: 5px 10px; border: none; border-radius: 5px; cursor: pointer; }
+    .approve { background: #28a745; color: #fff; }
+    .reject { background: #dc3545; color: #fff; }
+  </style>
+</head>
+<body>
+
+<h1>🧑‍⚖️ Moderatör Paneli - Onay Bekleyen İlanlar</h1>
+<div id="listings">Yükleniyor...</div>
+
+<script>
+const token = localStorage.getItem("admin_token"); // moderator veya admin token
+
+function fetchListings() {
+  fetch("/api/moderator/listings/pending", {
+    headers: { Authorization: "Bearer " + token }
+  })
+  .then(res => res.json())
+  .then(data => {
+    const container = document.getElementById("listings");
+    container.innerHTML = "";
+    if (data.length === 0) {
+      container.innerHTML = "<p>Bekleyen ilan yok.</p>";
+      return;
+    }
+    data.forEach(item => {
+      const div = document.createElement("div");
+      div.className = "listing";
+      div.innerHTML = \`
+        <strong>\${item.title}</strong><br>
+        <small>📅 \${item.created_at}</small><br><br>
+        <button class="approve" onclick="moderate(\${item.id}, 'approve')">Onayla</button>
+        <button class="reject" onclick="moderate(\${item.id}, 'reject')">Reddet</button>
+      \`;
+      container.appendChild(div);
+    });
+  });
+}
+
+function moderate(id, action) {
+  fetch(\`/api/moderator/listings/\${action}/\${id}\`, {
+    method: "POST",
+    headers: { Authorization: "Bearer " + token }
+  })
+  .then(res => res.json())
+  .then(result => {
+    alert(result.message);
+    fetchListings();
+  });
+}
+
+fetchListings();
+</script>
+
+</body>
+</html>

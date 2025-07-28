@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2020 BMW 3 Serisi 320i - Garajburada.com</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8fafc;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+            color: white;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            background: white;
+            padding: 1rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .breadcrumb-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .breadcrumb a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .breadcrumb span {
+            color: #666;
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        /* Image Gallery */
+        .image-gallery {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .main-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .thumbnail-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.5rem;
+            padding: 1rem;
+        }
+
+        .thumbnail {
+            width: 100%;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .thumbnail:hover {
+            transform: scale(1.05);
+        }
+
+        /* Vehicle Info */
+        .vehicle-info {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 2rem;
+        }
+
+        .price {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #10b981;
+            margin-bottom: 1rem;
+        }
+
+        .vehicle-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: #1e293b;
+        }
+
+        .vehicle-subtitle {
+            color: #64748b;
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-btn {
+            width: 100%;
+            padding: 1rem;
+            background: #10b981;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-bottom: 1rem;
+        }
+
+        .contact-btn:hover {
+            background: #059669;
+        }
+
+        .contact-info {
+            border-top: 1px solid #e2e8f0;
+            padding-top: 1rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            color: #64748b;
+        }
+
+        /* Details Section */
+        .details-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            color: #1e293b;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+        }
+
+        .specs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .spec-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+
+        .spec-label {
+            font-weight: 500;
+            color: #64748b;
+        }
+
+        .spec-value {
+            font-weight: bold;
+            color: #1e293b;
+        }
+
+        /* Description */
+        .description {
+            line-height: 1.8;
+            color: #4a5568;
+        }
+
+        /* Contact Form */
+        .contact-form {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .submit-btn:hover {
+            background: #2563eb;
+        }
+
+        /* Similar Listings */
+        .similar-listings {
+            margin-top: 2rem;
+        }
+
+        .listings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .listing-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .listing-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .listing-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .listing-content {
+            padding: 1rem;
+        }
+
+        .listing-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #1e293b;
+        }
+
+        .listing-price {
+            color: #10b981;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .listing-location {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+        }
+
+        .modal-content {
+            margin: auto;
+            display: block;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90%;
+            object-fit: contain;
+        }
+
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .thumbnail-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .specs-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .listings-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Alert */
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .alert.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .alert.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="logo">🚗 Garajburada.com</a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="index.html">Ana Sayfa</a></li>
+                    <li><a href="#listings">İlanlar</a></li>
+                    <li><a href="#about">Hakkımızda</a></li>
+                    <li><a href="login.html">Giriş Yap</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <div class="breadcrumb-content">
+            <a href="index.html">Ana Sayfa</a> > 
+            <a href="#bmw">BMW</a> > 
+            <a href="#3-series">3 Serisi</a> > 
+            <span>2020 BMW 3 Serisi 320i</span>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Left Column -->
+        <div class="left-column">
+            <!-- Image Gallery -->
+            <div class="image-gallery">
+                <img src="https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800&h=400&fit=crop" 
+                     alt="BMW 3 Serisi" class="main-image" onclick="openModal(this.src)">
+                <div class="thumbnail-grid">
+                    <img src="https://images.unsplash.com/photo-1555215695-3004980ad54e?w=200&h=100&fit=crop" 
+                         alt="BMW 3 Serisi" class="thumbnail" onclick="changeMainImage(this.src)">
+                    <img src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=200&h=100&fit=crop" 
+                         alt="BMW 3 Serisi İç Mekan" class="thumbnail" onclick="changeMainImage(this.src)">
+                    <img src="https://images.unsplash.com/photo-1582639510494-c80b5de9f148?w=200&h=100&fit=crop" 
+                         alt="BMW 3 Serisi Motor" class="thumbnail" onclick="changeMainImage(this.src)">
+                    <img src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=200&h=100&fit=crop" 
+                         alt="BMW 3 Serisi Arka" class="thumbnail" onclick="changeMainImage(this.src)">
+                    <img src="https://images.unsplash.com/photo-1582639510494-c80b5de9f148?w=200&h=100&fit=crop" 
+                         alt="BMW 3 Serisi Detay" class="thumbnail" onclick="changeMainImage(this.src)">
+                </div>
+            </div>
+
+            <!-- Vehicle Details -->
+            <div class="details-section">
+                <h2 class="section-title">Araç Detayları</h2>
+                <div class="specs-grid">
+                    <div class="spec-item">
+                        <span class="spec-label">Marka</span>
+                        <span class="spec-value">BMW</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Model</span>
+                        <span class="spec-value">3 Serisi</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Yıl</span>
+                        <span class="spec-value">2020</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Kilometre</span>
+                        <span class="spec-value">45,000 km</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Yakıt Tipi</span>
+                        <span class="spec-value">Benzin</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Vites</span>
+                        <span class="spec-value">Otomatik</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Motor Hacmi</span>
+                        <span class="spec-value">2.0L</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Güç</span>
+                        <span class="spec-value">170 HP</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Renk</span>
+                        <span class="spec-value">Beyaz</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Kasa Tipi</span>
+                        <span class="spec-value">Sedan</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Çekici</span>
+                        <span class="spec-value">Önden Çekiş</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Garanti</span>
+                        <span class="spec-value">Var</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="details-section">
+                <h2 class="section-title">Açıklama</h2>
+                <div class="description">
+                    <p>2020 model BMW 3 Serisi 320i, mükemmel durumda, tek sahibinden satılık. Araç düzenli bakımları yapılmış, hiç kaza geçirmemiş, orijinal boyasında.</p>
+                    <br>
+                    <p><strong>Öne Çıkan Özellikler:</strong></p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>LED far ve sis farları</li>
+                        <li>Adaptif hız sabitleyici</li>
+                        <li>Park sensörü (ön ve arka)</li>
+                        <li>Geri görüş kamerası</li>
+                        <li>Deri koltuk</li>
+                        <li>Navigasyon sistemi</li>
+                        <li>Bluetooth bağlantısı</li>
+                        <li>Klima (otomatik)</li>
+                    </ul>
+                    <br>
+                    <p>Araç İstanbul'da görülebilir. Test sürüşü yapılabilir. Fiyatta pazarlık payı vardır.</p>
+                </div>
+            </div>
+
+            <!-- Contact Form -->
+            <div class="contact-form">
+                <h2 class="section-title">İletişim Formu</h2>
+                <div id="contactAlert" class="alert"></div>
+                <form id="contactForm">
+                    <div class="form-group">
+                        <label for="name">Ad Soyad *</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">E-posta *</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Telefon</label>
+                        <input type="tel" id="phone" name="phone">
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Mesajınız *</label>
+                        <textarea id="message" name="message" placeholder="Bu araç hakkında bilgi almak istiyorum..." required></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-paper-plane"></i> Mesaj Gönder
+                    </button>
+                </form>
+            </div>
+
+            <!-- Similar Listings -->
+            <div class="similar-listings">
+                <h2 class="section-title">Benzer İlanlar</h2>
+                <div class="listings-grid">
+                    <div class="listing-card">
+                        <img src="https://images.unsplash.com/photo-1555215695-3004980ad54e?w=400&h=200&fit=crop" alt="BMW 3 Serisi" class="listing-image">
+                        <div class="listing-content">
+                            <div class="listing-title">2019 BMW 3 Serisi 320d</div>
+                            <div class="listing-price">₺750,000</div>
+                            <div class="listing-location">İstanbul, Kadıköy</div>
+                        </div>
+                    </div>
+                    <div class="listing-card">
+                        <img src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400&h=200&fit=crop" alt="Mercedes C Serisi" class="listing-image">
+                        <div class="listing-content">
+                            <div class="listing-title">2020 Mercedes C Serisi C200</div>
+                            <div class="listing-price">₺820,000</div>
+                            <div class="listing-location">İstanbul, Beşiktaş</div>
+                        </div>
+                    </div>
+                    <div class="listing-card">
+                        <img src="https://images.unsplash.com/photo-1582639510494-c80b5de9f148?w=400&h=200&fit=crop" alt="Audi A4" class="listing-image">
+                        <div class="listing-content">
+                            <div class="listing-title">2021 Audi A4 2.0 TDI</div>
+                            <div class="listing-price">₺780,000</div>
+                            <div class="listing-location">İstanbul, Şişli</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="right-column">
+            <!-- Vehicle Info Card -->
+            <div class="vehicle-info">
+                <div class="price">₺850,000</div>
+                <h1 class="vehicle-title">2020 BMW 3 Serisi 320i</h1>
+                <p class="vehicle-subtitle">Benzin • Otomatik • 45,000 km • Beyaz</p>
+                
+                <button class="contact-btn" onclick="showContactInfo()">
+                    <i class="fas fa-phone"></i> Hemen Ara
+                </button>
+                
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-user"></i>
+                        <span>Ahmet Yılmaz</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>İstanbul, Kadıköy</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-calendar"></i>
+                        <span>İlan Tarihi: 15 Şubat 2025</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-eye"></i>
+                        <span>1,247 görüntülenme</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Modal -->
+    <div id="imageModal" class="modal">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+
+    <script>
+        // Image Gallery Functions
+        function changeMainImage(src) {
+            document.querySelector('.main-image').src = src;
+        }
+
+        function openModal(src) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            modal.style.display = 'block';
+            modalImg.src = src;
+        }
+
+        function closeModal() {
+            document.getElementById('imageModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('imageModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Contact Form
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const message = document.getElementById('message').value;
+            
+            // Show success message
+            showAlert('Mesajınız başarıyla gönderildi! En kısa sürede size dönüş yapılacaktır.', 'success');
+            
+            // Reset form
+            document.getElementById('contactForm').reset();
+        });
+
+        function showAlert(message, type) {
+            const alert = document.getElementById('contactAlert');
+            alert.textContent = message;
+            alert.className = `alert ${type}`;
+            alert.style.display = 'block';
+            
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 5000);
+        }
+
+        function showContactInfo() {
+            alert('Telefon: +90 555 123 4567\nE-posta: ahmet.yilmaz@email.com\nAdres: İstanbul, Kadıköy');
+        }
+
+        // Sticky sidebar
+        window.addEventListener('scroll', function() {
+            const vehicleInfo = document.querySelector('.vehicle-info');
+            const rect = vehicleInfo.getBoundingClientRect();
+            
+            if (rect.top <= 0) {
+                vehicleInfo.style.position = 'sticky';
+                vehicleInfo.style.top = '2rem';
+            }
+        });
+    </script>
+</body>
+</html> 

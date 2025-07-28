@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Garajburada.com - Araç Alım Satım Platformu</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .logo i {
+            margin-right: 0.5rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            transition: all 0.3s;
+        }
+
+        .nav-menu a:hover {
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: #ffd700;
+            color: #333;
+        }
+
+        .btn-primary:hover {
+            background: #ffed4e;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 215, 0, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            gap: 1rem;
+        }
+
+        .section-header h2 {
+            color: #667eea;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        .section-header i {
+            font-size: 2rem;
+            color: #ffd700;
+        }
+
+        /* Listings Grid */
+        .listings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .listing-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            border: 1px solid #f0f0f0;
+        }
+
+        .listing-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        .listing-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .listing-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .listing-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .badge-featured {
+            background: #ffd700;
+            color: #333;
+        }
+
+        .badge-urgent {
+            background: #ff4757;
+            color: white;
+        }
+
+        .listing-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2ed573;
+            margin-bottom: 0.5rem;
+        }
+
+        .listing-description {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .listing-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #667eea;
+            border: 1px solid #667eea;
+        }
+
+        .btn-outline:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.3);
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #ffd700;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        /* Features Section */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .feature-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .feature-description {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        .footer {
+            background: #333;
+            color: white;
+            padding: 3rem 0 1rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #ffd700;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #555;
+            padding-top: 1rem;
+            color: #999;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-menu {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="#" class="logo">
+                <i class="fas fa-car"></i>Garajburada.com
+            </a>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="#home">Ana Sayfa</a></li>
+                    <li><a href="#listings">İlanlar</a></li>
+                    <li><a href="#about">Hakkımızda</a></li>
+                    <li><a href="#contact">İletişim</a></li>
+                    <li><a href="login.html" class="btn btn-outline">Giriş Yap</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1>Türkiye'nin En Güvenilir Araç Platformu</h1>
+            <p>Binlerce araç arasından size en uygun olanını bulun. Güvenli alım-satım deneyimi için Garajburada.com'u tercih edin.</p>
+            <div class="hero-buttons">
+                <a href="#listings" class="btn btn-primary">
+                    <i class="fas fa-search"></i>İlanları Keşfet
+                </a>
+                <a href="ilan_ver.html" class="btn btn-secondary">
+                    <i class="fas fa-plus"></i>İlan Ver
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Featured Listings -->
+        <section class="section" id="listings">
+            <div class="section-header">
+                <i class="fas fa-fire"></i>
+                <h2>🔥 Vitrin İlanlar</h2>
+            </div>
+            <div id="featuredContainer" class="listings-grid">
+                <div class="loading">Yükleniyor...</div>
+            </div>
+        </section>
+
+        <!-- Urgent Listings -->
+        <section class="section">
+            <div class="section-header">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h2>⚠️ Acil İlanlar</h2>
+            </div>
+            <div id="urgentContainer" class="listings-grid">
+                <div class="loading">Yükleniyor...</div>
+            </div>
+        </section>
+
+        <!-- Platform Statistics -->
+        <section class="section">
+            <div class="section-header">
+                <i class="fas fa-chart-bar"></i>
+                <h2>📊 Platform İstatistikleri</h2>
+            </div>
+            <div id="statsContainer" class="stats-grid">
+                <div class="loading">Yükleniyor...</div>
+            </div>
+        </section>
+
+        <!-- Features -->
+        <section class="section">
+            <div class="section-header">
+                <i class="fas fa-star"></i>
+                <h2>⭐ Neden Garajburada.com?</h2>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Güvenli Alım-Satım</h3>
+                    <p class="feature-description">Doğrulanmış kullanıcılar ve güvenli ödeme sistemi ile risk-free alım-satım deneyimi.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3 class="feature-title">Gelişmiş Arama</h3>
+                    <p class="feature-description">Marka, model, fiyat aralığı ve daha fazlasına göre filtreleme yaparak ideal aracınızı bulun.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Mobil Uyumlu</h3>
+                    <p class="feature-description">Her cihazdan erişebilir, responsive tasarım ile mobil deneyimde de mükemmel performans.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h3 class="feature-title">7/24 Destek</h3>
+                    <p class="feature-description">Teknik destek ekibimiz her zaman yanınızda, sorularınızı yanıtlamaya hazır.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="#home">Ana Sayfa</a>
+                <a href="#listings">İlanlar</a>
+                <a href="#about">Hakkımızda</a>
+                <a href="#contact">İletişim</a>
+                <a href="login.html">Giriş Yap</a>
+                <a href="register.html">Kayıt Ol</a>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Garajburada.com. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Demo veriler
+        const demoListings = [
+            { 
+                Id: 1, 
+                Title: "2018 Renault Clio", 
+                Price: 435000, 
+                IsFeatured: true, 
+                IsUrgent: false, 
+                Description: "Temiz araç, düşük km, tek sahibinden",
+                Image: "https://via.placeholder.com/300x200/667eea/ffffff?text=Renault+Clio"
+            },
+            { 
+                Id: 2, 
+                Title: "2020 Ford Courier", 
+                Price: 635000, 
+                IsFeatured: true, 
+                IsUrgent: true, 
+                Description: "Ticari araç, yeni gibi, servis kayıtlı",
+                Image: "https://via.placeholder.com/300x200/764ba2/ffffff?text=Ford+Courier"
+            },
+            { 
+                Id: 3, 
+                Title: "2019 Honda Civic", 
+                Price: 520000, 
+                IsFeatured: false, 
+                IsUrgent: true, 
+                Description: "Spor araç, hızlı satış, düşük yakıt",
+                Image: "https://via.placeholder.com/300x200/2ed573/ffffff?text=Honda+Civic"
+            },
+            { 
+                Id: 4, 
+                Title: "2021 Toyota Corolla", 
+                Price: 780000, 
+                IsFeatured: true, 
+                IsUrgent: false, 
+                Description: "Aile arabası, güvenli, ekonomik",
+                Image: "https://via.placeholder.com/300x200/ffd700/333333?text=Toyota+Corolla"
+            }
+        ];
+
+        async function fetchFeatured() {
+            try {
+                const res = await fetch("http://localhost:8000/api/listings/featured");
+                if (res.ok) {
+                    const data = await res.json();
+                    displayListings(data, "featuredContainer");
+                } else {
+                    throw new Error("Python API çalışmıyor");
+                }
+            } catch (error) {
+                const featured = demoListings.filter(item => item.IsFeatured);
+                displayListings(featured, "featuredContainer");
+            }
+        }
+
+        async function fetchUrgent() {
+            try {
+                const res = await fetch("http://localhost:8000/api/listings/urgent");
+                if (res.ok) {
+                    const data = await res.json();
+                    displayListings(data, "urgentContainer");
+                } else {
+                    throw new Error("Python API çalışmıyor");
+                }
+            } catch (error) {
+                const urgent = demoListings.filter(item => item.IsUrgent);
+                displayListings(urgent, "urgentContainer");
+            }
+        }
+
+        function displayListings(listings, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            
+            if (listings.length === 0) {
+                container.innerHTML = '<div class="listing-card"><p>Henüz ilan bulunmuyor.</p></div>';
+                return;
+            }
+
+            listings.forEach(item => {
+                const div = document.createElement("div");
+                div.className = "listing-card";
+                
+                const badges = [];
+                if (item.IsFeatured) badges.push('<span class="listing-badge badge-featured">Vitrin</span>');
+                if (item.IsUrgent) badges.push('<span class="listing-badge badge-urgent">Acil</span>');
+                
+                div.innerHTML = `
+                    <div class="listing-header">
+                        <h3 class="listing-title">${item.Title}</h3>
+                        <div>${badges.join('')}</div>
+                    </div>
+                    <div class="listing-price">${item.Price.toLocaleString()} ₺</div>
+                    <p class="listing-description">${item.Description}</p>
+                    <div class="listing-actions">
+                        <a href="ilan_detay.html?id=${item.Id}" class="btn-small btn-outline">Detayları Gör</a>
+                        <a href="ilan_mesaj.html?id=${item.Id}" class="btn-small btn-outline">Mesaj Gönder</a>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function displayStats() {
+            const container = document.getElementById("statsContainer");
+            container.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-users"></i></div>
+                    <div class="stat-number">150+</div>
+                    <div class="stat-label">Toplam Kullanıcı</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-car"></i></div>
+                    <div class="stat-number">89</div>
+                    <div class="stat-label">Aktif İlan</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-money-bill-wave"></i></div>
+                    <div class="stat-number">425K</div>
+                    <div class="stat-label">Ortalama Fiyat</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                    <div class="stat-number">67</div>
+                    <div class="stat-label">Başarılı Satış</div>
+                </div>
+            `;
+        }
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Initialize
+        fetchFeatured();
+        fetchUrgent();
+        displayStats();
+    </script>
+</body>
+</html>
