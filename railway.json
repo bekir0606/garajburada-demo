@@ -4,7 +4,7 @@
     "builder": "NIXPACKS"
   },
   "deploy": {
-    "startCommand": "uvicorn test_app:app --host 0.0.0.0 --port $PORT",
+    "startCommand": "python simple_test.py",
     "healthcheckPath": "/api/test",
     "healthcheckTimeout": 300,
     "restartPolicyType": "ON_FAILURE",
