@@ -30,7 +30,13 @@ def main():
         print("🔧 Default port kullanılıyor: 8000")
     
     try:
+        # Database'i oluştur
+        print("🗄️ Database oluşturuluyor...")
+        import setup_railway_db
+        setup_railway_db.setup_database()
+        
         # Uvicorn ile sunucuyu başlat
+        print("🚀 FastAPI sunucusu başlatılıyor...")
         uvicorn.run(
             "backend.main:app",
             host=host,
